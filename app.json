@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "tajmr",
-    "slug": "tajmr",
+    "name": "kvarnstenen",
+    "slug": "kvarnstenen",
+    "owner": "kvarnstenen",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

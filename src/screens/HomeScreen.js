@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
+import { screenPropTypes } from '../constants/propTypes';
+import { selectHomeScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { Heading } from '../components/Heading';
 
@@ -10,21 +13,23 @@ export function HomeScreen({ navigation }) {
     navigation.navigate('game/new');
   }, [navigation]);
   const hasSavedGames = true;
+  const cmsData = useSelector(selectHomeScreen);
+  console.log('cmsData', cmsData);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Heading>Kvarnstenen</Heading>
+      <Heading>{cmsData.title}</Heading>
       <View style={styles.actionButtons}>
-        <Button.Primary text="Nytt spel" style={styles.button} onPress={newGame} />
+        <Button.Primary text={cmsData.new_game_button_text} style={styles.button} onPress={newGame} />
         {hasSavedGames && (
           <Button.Secondary
-            text="Fortsätt spel"
+            text={cmsData.continue_game_button_text}
             style={styles.button}
             onPress={() => navigation.navigate('ContinueGame')}
           />
         )}
         <Button.Tertiary
-          text="Hur spelar man?"
+          text={cmsData.how_to_play_button_text}
           style={styles.button}
           onPress={() => navigation.navigate('HowToPlay')}
         />
@@ -32,6 +37,10 @@ export function HomeScreen({ navigation }) {
     </SafeAreaView>
   );
 }
+
+HomeScreen.propTypes = {
+  navigation: screenPropTypes.navigation,
+};
 
 const styles = StyleSheet.create({
   container: {
