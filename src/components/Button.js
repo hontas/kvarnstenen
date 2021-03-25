@@ -12,11 +12,12 @@ const propTypes = {
   style: ViewPropTypes.style,
   textStyle: Text.propTypes.style,
   children: PropTypes.element,
+  disabled: PropTypes.bool,
 };
 
-function Button({ onPress, text, style, textStyle, children }) {
+function Button({ onPress, text, style, textStyle, children, disabled, ...rest }) {
   return (
-    <TouchableHighlight style={[styles.container, style]} onPress={onPress}>
+    <TouchableHighlight {...rest} disabled={disabled} style={[styles.container, style]} onPress={onPress}>
       <View>
         {text && <Text style={[styles.text, textStyle]}>{text}</Text>}
         {children}
@@ -26,13 +27,26 @@ function Button({ onPress, text, style, textStyle, children }) {
 }
 Button.propTypes = propTypes;
 
-export function Primary({ style, ...props }) {
-  return <Button style={[styles.primaryContainer, style]} textStyle={styles.primaryText} {...props} />;
+export function Primary({ style, disabled, ...props }) {
+  return (
+    <Button
+      disabled={disabled}
+      style={[styles.primaryContainer, disabled && styles.primaryContainerDisabled, style]}
+      textStyle={styles.primaryText}
+      {...props}
+    />
+  );
 }
 Primary.propTypes = propTypes;
 
-export function Secondary({ style, ...props }) {
-  return <Button style={[styles.secondaryContainer, style]} textStyle={styles.secondaryText} {...props} />;
+export function Secondary({ style, disabled, ...props }) {
+  return (
+    <Button
+      style={[styles.secondaryContainer, disabled && styles.secondaryContainerDisabled, style]}
+      textStyle={styles.secondaryText}
+      {...props}
+    />
+  );
 }
 Secondary.propTypes = propTypes;
 
@@ -52,6 +66,9 @@ const styles = StyleSheet.create({
   },
   primaryContainer: {
     backgroundColor: COLORS.button.bg_primary,
+  },
+  primaryContainerDisabled: {
+    backgroundColor: COLORS.button.disabled,
   },
   primaryText: {
     color: COLORS.button.text_primary,
