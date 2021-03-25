@@ -1,29 +1,39 @@
 import * as React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Text, StyleSheet, SafeAreaView } from 'react-native';
 
-import { useUser } from '../context/userContext';
+import { selectChaptersLoading, getChapters } from '../store/reducers/chapters';
+import { selectUserName, setUserName } from '../store/reducers/user';
 import * as Button from '../components/Button';
 import { TextInput } from '../components/TextInput';
 import { screenPropTypes } from '../constants/propTypes';
 
 export function NewGameScreen({ navigation }) {
+  const dispatch = useDispatch();
+  const chaptersLoading = useSelector(selectChaptersLoading);
+  const userName = useSelector(selectUserName);
+  const placeholder = 'Ditt namn';
+
   const startGame = React.useCallback(() => {
-    // validate user name
+    // validate user
+    if (!userName) return;
     navigation.navigate('game/start');
   }, [navigation]);
 
   const handleChangeText = (text) => {
-    setUserName(text);
+    dispatch(setUserName(text));
   };
 
-  const { user, setUserName } = useUser();
-  const placeholder = user?.name || 'Ditt namn';
+  React.useEffect(() => {
+    dispatch(getChapters());
+  }, [getChapters]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>New Game Screen for {user.name}</Text>
+      {chaptersLoading && <Text>laddar kapitel</Text>}
+      <Text>New Game Screen</Text>
       <TextInput placeholder={placeholder} onChangeText={handleChangeText} />
-      <Button.Primary text="Starta" style={styles.button} onPress={startGame} />
+      <Button.Primary disabled={!userName} text="Starta" style={styles.button} onPress={startGame} />
     </SafeAreaView>
   );
 }

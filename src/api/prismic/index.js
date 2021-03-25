@@ -5,7 +5,6 @@ function queryClient(query) {
   return client
     .query({ query })
     .then((response) => {
-      console.log(response.data);
       return response.data;
     })
     .catch((error) => {
@@ -17,6 +16,10 @@ export const fetchScreensData = () => {
   return queryClient(queries.getAllBaseScreens);
 };
 
-export const fetchAllChapters = () => {
-  return queryClient(queries.getAllChapters);
+export const fetchAllChapters = async () => {
+  const response = await queryClient(queries.getAllChapters);
+  return response.allChapters.edges.map((chapter) => ({
+    path: chapter.node._meta.uid,
+    name: chapter.node.name,
+  }));
 };

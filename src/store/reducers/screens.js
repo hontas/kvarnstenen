@@ -32,7 +32,7 @@ function getScreensDataError(payload) {
 }
 
 export const getScreensData = () => async (dispatch) => {
-  dispatch(fetchStarted);
+  dispatch(fetchStarted());
   try {
     const response = await prismic.fetchScreensData();
     dispatch(getScreensDataSuccess(response));
@@ -46,6 +46,7 @@ export const getScreensData = () => async (dispatch) => {
  */
 
 export const selectHomeScreen = (state) => state.screens.screens.homescreen;
+export const selectScreensLoading = (state) => state.screens.isLoading;
 
 /**
  * Reducer

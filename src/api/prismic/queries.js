@@ -21,36 +21,6 @@ export const getAllChapters = gql`
           _meta {
             uid
           }
-          body {
-            ... on ChapterBodyText {
-              fields {
-                paragraph
-              }
-            }
-            ... on ChapterBodyEdges {
-              fields {
-                link_text
-                chapter_link {
-                  ... on Chapter {
-                    name
-                    _meta {
-                      uid
-                    }
-                  }
-                  _linkType
-                  __typename
-                }
-              }
-            }
-            ... on ChapterBodyAudioclip {
-              primary {
-                media {
-                  __typename
-                }
-                embed
-              }
-            }
-          }
         }
       }
     }
