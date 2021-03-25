@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import { screenPropTypes } from '../constants/propTypes';
-import { selectHomeScreen } from '../store/reducers/screens';
+import { selectHomeScreen, selectScreensLoading } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { Heading } from '../components/Heading';
 
@@ -13,23 +13,27 @@ export function HomeScreen({ navigation }) {
     navigation.navigate('game/new');
   }, [navigation]);
   const hasSavedGames = true;
-  const cmsData = useSelector(selectHomeScreen);
-  console.log('cmsData', cmsData);
+  const isLoading = useSelector(selectScreensLoading);
+  const hs = useSelector(selectHomeScreen);
+  console.log('isLoading', isLoading);
+
+  if (isLoading) return <Heading>Laddar data</Heading>;
+  if (!hs) return <Heading>Ngt gick snett</Heading>;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Heading>{cmsData.title}</Heading>
+      <Heading>{hs.title}</Heading>
       <View style={styles.actionButtons}>
-        <Button.Primary text={cmsData.new_game_button_text} style={styles.button} onPress={newGame} />
+        <Button.Primary text={hs.new_game_button_text} style={styles.button} onPress={newGame} />
         {hasSavedGames && (
           <Button.Secondary
-            text={cmsData.continue_game_button_text}
+            text={hs.continue_game_button_text}
             style={styles.button}
             onPress={() => navigation.navigate('ContinueGame')}
           />
         )}
         <Button.Tertiary
-          text={cmsData.how_to_play_button_text}
+          text={hs.how_to_play_button_text}
           style={styles.button}
           onPress={() => navigation.navigate('HowToPlay')}
         />
