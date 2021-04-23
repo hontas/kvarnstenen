@@ -1,42 +1,50 @@
-import * as React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Text, StyleSheet, SafeAreaView } from 'react-native';
 
-import { selectChaptersLoading, getChapters } from '../store/reducers/chapters';
+import useT from '../utils/useT';
+import { getChapters } from '../store/reducers/chapters';
 import { selectUserName, setUserName } from '../store/reducers/user';
+import { selectScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { TextInput } from '../components/TextInput';
 import { screenPropTypes } from '../constants/propTypes';
+import { ROUTE_NAMES } from '../constants/routes';
 
 export function NewGameScreen({ navigation }) {
   const dispatch = useDispatch();
-  const chaptersLoading = useSelector(selectChaptersLoading);
   const userName = useSelector(selectUserName);
-  const placeholder = 'Ditt namn';
+  const screen = useSelector(selectScreen('new-game'));
+  const t = useT(screen?.ui_texts);
 
-  const startGame = React.useCallback(() => {
+  const startGame = useCallback(() => {
     // validate user
-    if (!userName) return;
-    navigation.navigate('game/start');
+    navigation.navigate(ROUTE_NAMES.START_GAME);
   }, [navigation]);
 
   const handleChangeText = (text) => {
     dispatch(setUserName(text));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (screen) {
+      navigation.setOptions({ title: screen.name });
+    }
+  }, [screen]);
+
+  useEffect(() => {
     dispatch(getChapters());
   }, [getChapters]);
 
   return (
     <SafeAreaView style={styles.container}>
-      {chaptersLoading && <Text>laddar kapitel</Text>}
-      <Text>New Game Screen</Text>
-      <TextInput placeholder={placeholder} onChangeText={handleChangeText} />
-      <Button.Primary disabled={!userName} text="Starta" style={styles.button} onPress={startGame} />
+      <Text>{screen.title}</Text>
+      <TextInput placeholder={t('name_input_placeholder')} onChangeText={handleChangeText} />
+      <Button.Primary disabled={!userName} text={t('start_game')} style={styles.button} onPress={startGame} />
     </SafeAreaView>
   );
 }
+
 NewGameScreen.propTypes = {
   ...screenPropTypes,
 };

@@ -6,4 +6,7 @@ export default {
     text_secondary: '#333',
     disabled: '#AAA',
   },
+  red: 'red',
+  green: 'green',
+  blue: 'blue',
 };

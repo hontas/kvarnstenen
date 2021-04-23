@@ -18,7 +18,6 @@ function fetchStarted() {
 }
 
 function getChaptersSuccess(payload) {
-  console.log('getChaptersSuccess', payload);
   return {
     type: FETCH_CHAPTERS_SUCCESS,
     payload,
@@ -35,10 +34,11 @@ function getChaptersError(payload) {
 export const getChapters = () => async (dispatch) => {
   dispatch(fetchStarted());
   try {
-    const response = await prismic.fetchAllChapters();
-    await new Promise((r) => setTimeout(r, 3000));
-    dispatch(getChaptersSuccess(response));
+    const chapters = await prismic.getChapters();
+    // console.log('chapters', chapters);
+    dispatch(getChaptersSuccess(chapters));
   } catch (error) {
+    console.log('getChapters Error', error);
     dispatch(getChaptersError(error));
   }
 };
@@ -56,7 +56,7 @@ export const selectChaptersLoading = (state) => state.chapters.isLoading;
 
 const initialState = {
   isLoading: false,
-  chapters: [],
+  chapters: {},
 };
 
 export default function reducer(state = initialState, action) {

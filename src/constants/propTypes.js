@@ -7,4 +7,6 @@ export const screenPropTypes = {
   }),
 };
 
+export const childrenPropType = PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]);
+
 export default PropTypes;

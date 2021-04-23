@@ -12,12 +12,59 @@ export const getAllBaseScreens = gql`
   }
 `;
 
+export const getAllScreens = gql`
+  query {
+    allScreens {
+      edges {
+        node {
+          name
+          title
+          background_color
+          text_color
+          ui_texts {
+            text_key
+            text_value
+          }
+          _meta {
+            uid
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const getAllChapters = gql`
   query {
     allChapters {
       edges {
         node {
           name
+          choices_headline
+          choices {
+            choice_text
+            chapter_link {
+              ... on Chapter {
+                _meta {
+                  uid
+                }
+              }
+            }
+          }
+          body {
+            ... on ChapterBodyAudioclip {
+              type
+              primary {
+                media {
+                  ... on _FileLink {
+                    url
+                    size
+                    name
+                  }
+                }
+              }
+            }
+          }
           _meta {
             uid
           }

@@ -6,46 +6,41 @@ import { NewGameScreen } from '../screens/NewGameScreen';
 import { HowToPlayScreen } from '../screens/HowToPlayScreen';
 import { ContinueGameScreen } from '../screens/ContinueGameScreen';
 import { GameNavigator } from './gameNavigator';
+import { ROUTE_NAMES } from '../constants/routes';
 
 const Stack = createStackNavigator();
 const routes = [
   {
-    name: 'Home',
+    name: ROUTE_NAMES.HOME,
     component: HomeScreen,
     options: {
-      title: 'Home',
       headerShown: false,
     },
   },
   {
-    name: 'HowToPlay',
+    name: ROUTE_NAMES.HOW_TO_PLAY,
     component: HowToPlayScreen,
     options: {
-      title: 'Hur spelar man',
       headerShown: false,
     },
   },
   {
-    name: 'ContinueGame',
+    name: ROUTE_NAMES.CONTINUE_GAME,
     component: ContinueGameScreen,
     options: {
-      title: 'Fortsätt sparat spel',
       headerShown: true,
     },
   },
   {
     // TODO: Move to gameNavigator?
-    name: 'game/new',
+    name: ROUTE_NAMES.NEW_GAME,
     component: NewGameScreen,
-    options: {
-      title: 'Nytt Spel',
-    },
+    options: {},
   },
   {
-    name: 'game/start',
+    name: ROUTE_NAMES.START_GAME,
     component: GameNavigator,
     options: {
-      title: 'Börja Spela',
       headerShown: false,
     },
   },

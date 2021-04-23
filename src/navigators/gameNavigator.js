@@ -1,33 +1,27 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { useStory } from '../context/storyContext';
+import { selectChapters } from '../store/reducers/chapters';
 import { ChapterScreen } from '../screens/ChapterScreen';
-import { LoadingScreen } from '../screens/LoadingScreen';
+import { ChaptersLoadingScreen } from '../screens/ChaptersLoadingScreen';
 // import { InGameMenuScreen } from '../screens/InGameMenuScreen';
 
 const Stack = createStackNavigator();
 const commonOptions = {
-  headerShown: false,
+  headerShown: true,
 };
-// const chapter = {
-//   path: '1:1',
-//   name: 'Liams mamma',
-//   content: [{ type: 'xxx', data: {} }],
-//   edges: [{ path: '1:2', conditions: [{ path: '0:3', choice: 'a' }] }],
-// };
 
 export function GameNavigator() {
-  const state = useStory();
-  const { chapters = [] } = state;
-  console.log('chapters', chapters);
+  const chapters = useSelector(selectChapters);
+  // console.log('chapters', chapters);
 
   return (
     <Stack.Navigator screenOptions={commonOptions}>
-      <Stack.Screen key={`chapter/loading`} name={`chapterloading`} component={LoadingScreen} />
-      {chapters.map(({ name }) => (
-        <Stack.Screen key={`chapter/${name}`} name={`chapter/${name}`} component={ChapterScreen} />
+      <Stack.Screen key={`chapter/loading`} name={`chapterloading`} component={ChaptersLoadingScreen} />
+      {Object.keys(chapters).map((key) => (
+        <Stack.Screen key={`chapter/${key}`} name={`chapter/${key}`} component={ChapterScreen} />
       ))}
     </Stack.Navigator>
   );

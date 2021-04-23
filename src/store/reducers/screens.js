@@ -34,9 +34,10 @@ function getScreensDataError(payload) {
 export const getScreensData = () => async (dispatch) => {
   dispatch(fetchStarted());
   try {
-    const response = await prismic.fetchScreensData();
+    const response = await prismic.getScreens();
     dispatch(getScreensDataSuccess(response));
   } catch (error) {
+    console.log('error', error);
     dispatch(getScreensDataError(error));
   }
 };
@@ -45,8 +46,10 @@ export const getScreensData = () => async (dispatch) => {
  * Selectors
  */
 
-export const selectHomeScreen = (state) => state.screens.screens.homescreen;
+export const selectScreen = (screenName) => (state) => state.screens.screens[screenName];
+export const selectHomeScreen = (state) => state.screens.screens.HomeScreen;
 export const selectScreensLoading = (state) => state.screens.isLoading;
+export const selectScreensError = (state) => state.screens.error;
 
 /**
  * Reducer
@@ -54,6 +57,7 @@ export const selectScreensLoading = (state) => state.screens.isLoading;
 
 const initialState = {
   isLoading: false,
+  error: null,
   screens: {},
 };
 
@@ -70,6 +74,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
+        error: null,
         screens: action.payload,
       };
     }
@@ -78,6 +83,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
+        error: action.payload,
       };
     }
 

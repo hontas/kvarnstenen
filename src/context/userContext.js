@@ -29,7 +29,6 @@ const SET_USER_NAME = 'SET_USER_NAME';
  */
 
 function userReducer(state, action) {
-  console.log('state, action', state, action);
   switch (action.type) {
     case SET_USER_NAME: {
       return {

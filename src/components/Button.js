@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, StyleSheet, TouchableHighlight, ViewPropTypes } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ViewPropTypes } from 'react-native';
 
 import COLORS from '../constants/colors';
 import TYPOGRAPHY from '../constants/typography';
@@ -17,12 +17,12 @@ const propTypes = {
 
 function Button({ onPress, text, style, textStyle, children, disabled, ...rest }) {
   return (
-    <TouchableHighlight {...rest} disabled={disabled} style={[styles.container, style]} onPress={onPress}>
+    <TouchableOpacity {...rest} disabled={disabled} style={[styles.container, style]} onPress={onPress}>
       <View>
         {text && <Text style={[styles.text, textStyle]}>{text}</Text>}
         {children}
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }
 Button.propTypes = propTypes;

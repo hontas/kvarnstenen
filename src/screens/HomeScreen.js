@@ -1,41 +1,51 @@
-import * as React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
+import useT from '../utils/useT';
 import { screenPropTypes } from '../constants/propTypes';
-import { selectHomeScreen, selectScreensLoading } from '../store/reducers/screens';
+import { selectScreen, selectScreensLoading, selectScreensError } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { Heading } from '../components/Heading';
+import { LoadingScreen } from './LoadingScreen';
+import { ROUTE_NAMES } from '../constants/routes';
 
 export function HomeScreen({ navigation }) {
-  const newGame = React.useCallback(() => {
+  const newGame = useCallback(() => {
     // reset gameplay
-    navigation.navigate('game/new');
+    navigation.navigate(ROUTE_NAMES.NEW_GAME);
   }, [navigation]);
   const hasSavedGames = true;
   const isLoading = useSelector(selectScreensLoading);
-  const hs = useSelector(selectHomeScreen);
-  console.log('isLoading', isLoading);
+  const error = useSelector(selectScreensError);
+  const screen = useSelector(selectScreen('home'));
+  const t = useT(screen?.ui_texts);
 
-  if (isLoading) return <Heading>Laddar data</Heading>;
-  if (!hs) return <Heading>Ngt gick snett</Heading>;
+  useEffect(() => {
+    if (screen) {
+      navigation.setOptions({ title: screen.name });
+    }
+  }, [screen]);
+
+  if (isLoading) return <LoadingScreen text="Laddar data" />;
+  if (error) return <Heading>Ngt gick snett</Heading>;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Heading>{hs.title}</Heading>
+      <Heading>{screen.title}</Heading>
       <View style={styles.actionButtons}>
-        <Button.Primary text={hs.new_game_button_text} style={styles.button} onPress={newGame} />
+        <Button.Primary text={t('new_game')} style={styles.button} onPress={newGame} />
         {hasSavedGames && (
           <Button.Secondary
-            text={hs.continue_game_button_text}
+            text={t('continue_game')}
             style={styles.button}
-            onPress={() => navigation.navigate('ContinueGame')}
+            onPress={() => navigation.navigate(ROUTE_NAMES.CONTINUE_GAME)}
           />
         )}
         <Button.Tertiary
-          text={hs.how_to_play_button_text}
+          text={t('how_to_play')}
           style={styles.button}
-          onPress={() => navigation.navigate('HowToPlay')}
+          onPress={() => navigation.navigate(ROUTE_NAMES.HOW_TO_PLAY)}
         />
       </View>
     </SafeAreaView>
