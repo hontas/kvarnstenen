@@ -4,7 +4,6 @@ import { Text, View, StyleSheet, TouchableOpacity, ViewPropTypes } from 'react-n
 
 import COLORS from '../constants/colors';
 import TYPOGRAPHY from '../constants/typography';
-import LAYOUT from '../constants/layout';
 
 const propTypes = {
   onPress: PropTypes.func.isRequired,
@@ -59,7 +58,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     borderRadius: 5,
-    height: LAYOUT.button.height,
     justifyContent: 'center',
     padding: 10,
     width: '100%',

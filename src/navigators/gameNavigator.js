@@ -5,22 +5,39 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { selectChapters } from '../store/reducers/chapters';
 import { ChapterScreen } from '../screens/ChapterScreen';
-import { ChaptersLoadingScreen } from '../screens/ChaptersLoadingScreen';
-// import { InGameMenuScreen } from '../screens/InGameMenuScreen';
+
+export const transitionConfig = {
+  animation: 'timing',
+  config: {
+    duration: 2000,
+  },
+};
+export const fadeInOut = ({ current }) => ({
+  cardStyle: {
+    opacity: current.progress,
+  },
+});
 
 const Stack = createStackNavigator();
 const commonOptions = {
-  headerShown: true,
+  headerShown: false,
+  cardStyleInterpolator: fadeInOut,
+  transitionSpec: {
+    open: transitionConfig,
+    close: transitionConfig,
+  },
 };
 
 export function GameNavigator() {
   const chapters = useSelector(selectChapters);
   // console.log('chapters', chapters);
+  const screens = React.useMemo(() => {
+    return Object.keys(chapters).sort();
+  }, [chapters]);
 
   return (
     <Stack.Navigator screenOptions={commonOptions}>
-      <Stack.Screen key={`chapter/loading`} name={`chapterloading`} component={ChaptersLoadingScreen} />
-      {Object.keys(chapters).map((key) => (
+      {screens.map((key) => (
         <Stack.Screen key={`chapter/${key}`} name={`chapter/${key}`} component={ChapterScreen} />
       ))}
     </Stack.Navigator>

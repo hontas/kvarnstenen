@@ -6,7 +6,11 @@ export default {
     text_secondary: '#333',
     disabled: '#AAA',
   },
+  white: 'white',
+  black: 'black',
   red: 'red',
   green: 'green',
   blue: 'blue',
+  gray: '#777',
+  grayDark: '#333',
 };

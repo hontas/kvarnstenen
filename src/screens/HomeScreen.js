@@ -13,7 +13,7 @@ import { ROUTE_NAMES } from '../constants/routes';
 export function HomeScreen({ navigation }) {
   const newGame = useCallback(() => {
     // reset gameplay
-    navigation.navigate(ROUTE_NAMES.NEW_GAME);
+    navigation.navigate(ROUTE_NAMES.GAME_LOADING);
   }, [navigation]);
   const hasSavedGames = true;
   const isLoading = useSelector(selectScreensLoading);
@@ -27,7 +27,7 @@ export function HomeScreen({ navigation }) {
     }
   }, [screen]);
 
-  if (isLoading) return <LoadingScreen text="Laddar data" />;
+  if (isLoading) return <LoadingScreen />;
   if (error) return <Heading>Ngt gick snett</Heading>;
 
   return (

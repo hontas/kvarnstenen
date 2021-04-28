@@ -1,12 +1,24 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { ScrollView, View, StyleSheet, SafeAreaView } from 'react-native';
 
+import useT from '../utils/useT';
+import { selectScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { Paragraph } from '../components/Paragraph';
 import { Heading } from '../components/Heading';
 import { screenPropTypes } from '../constants/propTypes';
 
 export function HowToPlayScreen({ navigation }) {
+  const screen = useSelector(selectScreen('how-to-play'));
+  const t = useT(screen?.ui_texts);
+
+  React.useEffect(() => {
+    if (screen) {
+      navigation.setOptions({ title: screen.name });
+    }
+  }, [screen]);
+
   const goBack = React.useCallback(() => {
     navigation.goBack();
   }, [navigation]);
@@ -15,26 +27,11 @@ export function HowToPlayScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.inner}>
-          <Heading>Hur spelar man?</Heading>
-          <Paragraph>
-            Eu et aliquip magna consequat incididunt duis non velit sunt nostrud ex ullamco. Adipisicing qui consectetur
-            voluptate eu officia velit mollit dolor sit nisi id nostrud. Sunt eu ex proident velit ea id nostrud
-            reprehenderit occaecat ipsum excepteur sint amet. Magna irure adipisicing quis et proident adipisicing
-            aliqua elit elit anim.
-          </Paragraph>
-          <Paragraph>
-            Eu et aliquip magna consequat incididunt duis non velit sunt nostrud ex ullamco. Adipisicing qui consectetur
-            voluptate eu officia velit mollit dolor sit nisi id nostrud. Sunt eu ex proident velit ea id nostrud
-            reprehenderit occaecat ipsum excepteur sint amet. Magna irure adipisicing quis et proident adipisicing
-            aliqua elit elit anim.
-          </Paragraph>
-          <Paragraph>
-            Eu et aliquip magna consequat incididunt duis non velit sunt nostrud ex ullamco. Adipisicing qui consectetur
-            voluptate eu officia velit mollit dolor sit nisi id nostrud. Sunt eu ex proident velit ea id nostrud
-            reprehenderit occaecat ipsum excepteur sint amet. Magna irure adipisicing quis et proident adipisicing
-            aliqua elit elit anim.
-          </Paragraph>
-          <Button.Primary text="Tillbaka" style={styles.button} onPress={goBack} />
+          <Heading>{screen.title}</Heading>
+          <Paragraph>{t('paragraph')}</Paragraph>
+          <Paragraph>{t('paragraph')}</Paragraph>
+          <Paragraph>{t('paragraph')}</Paragraph>
+          <Button.Primary text={t('go_back_button')} style={styles.button} onPress={goBack} />
         </View>
       </ScrollView>
     </SafeAreaView>

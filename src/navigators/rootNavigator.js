@@ -5,7 +5,8 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { NewGameScreen } from '../screens/NewGameScreen';
 import { HowToPlayScreen } from '../screens/HowToPlayScreen';
 import { ContinueGameScreen } from '../screens/ContinueGameScreen';
-import { GameNavigator } from './gameNavigator';
+import { GameLoadingScreen } from '../screens/GameLoadingScreen';
+import { GameNavigator, transitionConfig, fadeInOut } from './gameNavigator';
 import { ROUTE_NAMES } from '../constants/routes';
 
 const Stack = createStackNavigator();
@@ -21,7 +22,7 @@ const routes = [
     name: ROUTE_NAMES.HOW_TO_PLAY,
     component: HowToPlayScreen,
     options: {
-      headerShown: false,
+      headerShown: true,
     },
   },
   {
@@ -38,10 +39,22 @@ const routes = [
     options: {},
   },
   {
+    name: ROUTE_NAMES.GAME_LOADING,
+    component: GameLoadingScreen,
+    options: {
+      headerShown: false,
+    },
+  },
+  {
     name: ROUTE_NAMES.START_GAME,
     component: GameNavigator,
     options: {
       headerShown: false,
+      cardStyleInterpolator: fadeInOut,
+      transitionSpec: {
+        open: transitionConfig,
+        close: transitionConfig,
+      },
     },
   },
 ];

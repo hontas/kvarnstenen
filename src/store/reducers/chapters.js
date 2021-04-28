@@ -32,11 +32,13 @@ function getChaptersError(payload) {
 }
 
 export const getChapters = () => async (dispatch) => {
+  console.log('fetch chapters');
   dispatch(fetchStarted());
   try {
     const chapters = await prismic.getChapters();
     // console.log('chapters', chapters);
     dispatch(getChaptersSuccess(chapters));
+    console.log('fetch chapters success');
   } catch (error) {
     console.log('getChapters Error', error);
     dispatch(getChaptersError(error));
