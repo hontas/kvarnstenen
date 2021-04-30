@@ -6,30 +6,41 @@ import { Entypo } from '@expo/vector-icons';
 
 import Colors from '../constants/colors';
 
-export const AudioControls = ({ onRewind, onPlayPause, onForwards, isPlaying }) => {
+const noop = () => {};
+
+export const AudioControls = ({
+  onRewind,
+  onLongRewind = noop,
+  onPlayPause,
+  onForwards = noop,
+  onLongForwards,
+  isPlaying,
+}: Props) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom, marginBottom: -insets.bottom }]}>
-      <TouchableOpacity style={styles.controlButton} onPress={onRewind}>
+      <TouchableOpacity style={styles.controlButton} onPress={onRewind} onLongPress={onLongRewind}>
         <Entypo name="controller-fast-backward" size={24} color={Colors.white} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.controlButton} onPress={onPlayPause}>
         <Entypo name={isPlaying ? 'controller-paus' : 'controller-play'} size={24} color={Colors.white} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.controlButton} onPress={onForwards}>
+      <TouchableOpacity style={styles.controlButton} onPress={onForwards} onLongPress={onLongForwards}>
         <Entypo name="controller-fast-forward" size={24} color={Colors.white} />
       </TouchableOpacity>
     </View>
   );
 };
 
-AudioControls.propTypes = {
-  onRewind: PropTypes.func.isRequired,
-  onPlayPause: PropTypes.func.isRequired,
-  onForwards: PropTypes.func.isRequired,
-  isPlaying: PropTypes.bool.isRequired,
-};
+interface Props {
+  onRewind: () => void;
+  onLongRewind: () => void;
+  onPlayPause: () => void;
+  onForwards: () => void;
+  onLongForwards: () => void;
+  isPlaying: boolean;
+}
 
 const styles = StyleSheet.create({
   container: {

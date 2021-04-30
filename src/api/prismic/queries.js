@@ -40,6 +40,9 @@ export const getAllChapters = gql`
       edges {
         node {
           name
+          geo_location
+          geo_location_title
+          geo_location_description
           choices_headline
           choices {
             choice_text
