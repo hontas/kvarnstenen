@@ -7,6 +7,7 @@ export default {
     disabled: '#AAA',
   },
   white: 'white',
+  whiteTransparent: 'rgba(255,255,255,0.5)',
   black: 'black',
   red: 'red',
   green: 'green',
