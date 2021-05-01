@@ -9,6 +9,7 @@ import Colors from '../constants/colors';
 const noop = () => {};
 
 export const AudioControls = ({
+  disabled,
   onRewind,
   onLongRewind = noop,
   onPlayPause,
@@ -17,23 +18,26 @@ export const AudioControls = ({
   isPlaying,
 }: Props) => {
   const insets = useSafeAreaInsets();
+  const btnStyles = styles.controlButton;
+  const btnColor = disabled ? Colors.whiteTransparent : Colors.white;
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom, marginBottom: -insets.bottom }]}>
-      <TouchableOpacity style={styles.controlButton} onPress={onRewind} onLongPress={onLongRewind}>
-        <Entypo name="controller-fast-backward" size={24} color={Colors.white} />
+      <TouchableOpacity disabled={disabled} style={btnStyles} onPress={onRewind} onLongPress={onLongRewind}>
+        <Entypo name="controller-fast-backward" size={24} color={btnColor} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.controlButton} onPress={onPlayPause}>
-        <Entypo name={isPlaying ? 'controller-paus' : 'controller-play'} size={24} color={Colors.white} />
+      <TouchableOpacity disabled={disabled} style={btnStyles} onPress={onPlayPause}>
+        <Entypo name={isPlaying ? 'controller-paus' : 'controller-play'} size={24} color={btnColor} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.controlButton} onPress={onForwards} onLongPress={onLongForwards}>
-        <Entypo name="controller-fast-forward" size={24} color={Colors.white} />
+      <TouchableOpacity disabled={disabled} style={btnStyles} onPress={onForwards} onLongPress={onLongForwards}>
+        <Entypo name="controller-fast-forward" size={24} color={btnColor} />
       </TouchableOpacity>
     </View>
   );
 };
 
 interface Props {
+  disabled: boolean;
   onRewind: () => void;
   onLongRewind: () => void;
   onPlayPause: () => void;
@@ -52,4 +56,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
+  controlButtonDisabled: {},
 });

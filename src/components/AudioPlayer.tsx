@@ -5,110 +5,113 @@ import { Audio, AVPlaybackStatus } from 'expo-av';
 import { ProgressBar } from './ProgressBar';
 import { AudioControls } from './AudioControls';
 
-Audio.setAudioModeAsync({ playsInSilentModeIOS: true })
-  .then(() => console.log('playSilentOk'))
-  .catch(console.log);
+Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).catch(console.log);
 
-export const AudioPlayer = ({ uri, soundRef, onComplete }: Props) => {
-  const sound = React.useRef<Audio.Sound>();
-  const [message, setMessage] = React.useState('');
+export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
+  const [soundObject, setSoundObject] = React.useState<Audio.Sound>();
   const [progress, setProgress] = React.useState(0);
-  const [playing, setPlaying] = React.useState(false);
-  const [status, setStatus] = React.useState<AVPlaybackStatus>();
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
 
   const onPlaybackStatusUpdate = (status) => {
+    if (!status.isLoaded) {
+      setIsLoaded(false);
+      return;
+    }
+
+    const { isPlaying, durationMillis, positionMillis, didJustFinish } = status;
+
     // console.log('onPlayBackStatusUpdate', status);
-    if (playing !== status.isPlaying) {
-      setStatus(status);
+
+    setIsPlaying(isPlaying);
+
+    if (durationMillis) {
+      setProgress(positionMillis / durationMillis);
     }
-    if (status.isLoaded && status.durationMillis) {
-      setProgress(status.positionMillis / status.durationMillis);
-    }
-    if (status.didJustFinish) {
+
+    if (didJustFinish) {
       onComplete();
-      setPlaying(false);
     }
   };
 
-  React.useEffect(() => {
-    if (!status || !status.isLoaded) return;
-
-    if (playing && !status.isPlaying) {
-      sound.current?.playAsync();
+  const togglePlayState = React.useCallback(() => {
+    if (!isPlaying) {
+      soundObject?.playAsync();
+    } else {
+      soundObject?.pauseAsync();
     }
-    if (!playing && status.isPlaying) {
-      sound.current?.pauseAsync();
-    }
-  }, [sound, playing, status]);
+  }, [soundObject, isPlaying]);
 
   React.useEffect(() => {
-    setMessage('Laddar ljudfil');
-    console.log('laddar ljudfil', uri);
-    Audio.Sound.createAsync({ uri }, { shouldPlay: false }, onPlaybackStatusUpdate).then((audio) => {
-      sound.current = soundRef.current = audio.sound;
-      console.log('play it');
-      sound.current.playAsync();
-      setMessage('');
-      setStatus(status);
-      setPlaying(true);
-    });
+    const loadSound = async () => {
+      console.log('loading audio');
+
+      const { sound, status } = await Audio.Sound.createAsync({ uri }, { shouldPlay: false }, onPlaybackStatusUpdate);
+
+      console.log('createAsync status', status);
+      parentSetSound(sound);
+      setSoundObject(sound);
+      setIsLoaded(status.isLoaded);
+
+      await sound.setPositionAsync(0);
+      await sound.playAsync();
+    };
+
+    const unloadSound = async () => {
+      if (soundObject) {
+        console.log('unloading audio');
+        setIsPlaying(false);
+        setIsLoaded(false);
+        setProgress(0);
+        await soundObject.unloadAsync();
+      }
+    };
+
+    loadSound();
 
     return () => {
-      if (sound.current) {
-        setMessage('unloading sound');
-        sound.current?.unloadAsync();
-        setStatus(undefined);
-        setPlaying(false);
-        setProgress(0);
-        setMessage('');
-      }
+      unloadSound();
     };
   }, [uri]);
 
   const rewind = () =>
-    sound.current?.getStatusAsync().then((status) => {
+    soundObject?.getStatusAsync().then((status) => {
       if (status.isLoaded) {
-        sound.current?.setPositionAsync(Math.max(status.positionMillis - 15 * 1000, 0));
+        soundObject?.setPositionAsync(Math.max(status.positionMillis - 15 * 1000, 0));
       }
     });
 
   const fullRewind = () => {
-    sound.current?.setPositionAsync(0);
-    setProgress(0);
+    soundObject?.setPositionAsync(0);
   };
 
-  const playPause = () => setPlaying(!playing);
-
   const forwards = () =>
-    sound.current?.getStatusAsync().then((status) => {
+    soundObject?.getStatusAsync().then((status) => {
       if (status.isLoaded) {
-        sound.current?.setPositionAsync(Math.min(status.positionMillis + 15 * 1000, status.durationMillis || 0));
+        soundObject?.setPositionAsync(Math.min(status.positionMillis + 15 * 1000, status.durationMillis || 0));
       }
     });
 
-  const skipToEnd = () => {
-    if (status?.isLoaded && status.durationMillis) {
-      sound.current?.playFromPositionAsync(status.durationMillis);
-    } else {
-      sound.current?.getStatusAsync().then((status) => {
-        if (status.isLoaded && status.durationMillis) {
-          sound.current?.setPositionAsync(status.durationMillis);
-        }
-      });
+  const skipToEnd = async () => {
+    console.log('skipToEnd', !!soundObject);
+    if (!soundObject) return;
+    const status = await soundObject.getStatusAsync();
+    if (status.isLoaded && status.durationMillis) {
+      soundObject.setPositionAsync(status.durationMillis);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text>{message}</Text>
       <ProgressBar progress={progress} />
       <AudioControls
+        disabled={!isLoaded}
         onRewind={rewind}
         onLongRewind={fullRewind}
-        onPlayPause={playPause}
+        onPlayPause={togglePlayState}
         onForwards={forwards}
         onLongForwards={skipToEnd}
-        isPlaying={playing}
+        isPlaying={isPlaying}
       />
     </View>
   );
@@ -117,7 +120,7 @@ export const AudioPlayer = ({ uri, soundRef, onComplete }: Props) => {
 interface Props {
   uri: string;
   onComplete: () => void;
-  soundRef: React.RefObject<Audio.Sound>;
+  parentSetSound: (sound: Audio.Sound) => void;
 }
 
 const styles = StyleSheet.create({
