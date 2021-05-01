@@ -3,19 +3,19 @@ import { useSelector } from 'react-redux';
 import { Animated, StyleSheet, SafeAreaView, Text } from 'react-native';
 import { Audio } from 'expo-av';
 
+import { LoadingBoundary } from '../components/LoadingBoundary';
 import { Heading } from '../components/Heading';
 import * as Button from '../components/Button';
 import { Map } from '../components/Map';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { selectChapters } from '../store/reducers/chapters';
-import { screenPropTypes } from '../constants/propTypes';
 
 export function ChapterScreen({ navigation, route }) {
   const routeName = route.name.split('/')[1];
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
 
-  let soundRef = React.useRef<Audio.Sound>().current;
+  const [sound, setSound] = React.useState<Audio.Sound>();
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const fadeAnimTiming = Animated.timing(fadeAnim, {
     toValue: 1,
@@ -32,9 +32,9 @@ export function ChapterScreen({ navigation, route }) {
 
   const goToNextScreen = async (chapter_link) => {
     console.log('goToNextScreen');
-    if (soundRef) {
-      console.log('unloading sound');
-      await soundRef.unloadAsync();
+    if (sound) {
+      console.log('unloading sound from ChapterScreen');
+      await sound.unloadAsync();
       console.log('unloaded');
     }
     navigation.navigate(`chapter/${chapter_link}`);
@@ -43,13 +43,17 @@ export function ChapterScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Heading>{chapter.name}</Heading>
-      {chapter.geo_location && (
-        <Map
-          latLng={chapter.geo_location}
-          markerTitle={chapter.geo_location_title}
-          markerDescription={chapter.geo_location_description}
-        />
-      )}
+
+      <LoadingBoundary isLoading={!sound} loadingText="Laddar ljudfiler">
+        {chapter.geo_location && (
+          <Map
+            latLng={chapter.geo_location}
+            markerTitle={chapter.geo_location_title}
+            markerDescription={chapter.geo_location_description}
+          />
+        )}
+      </LoadingBoundary>
+
       <Animated.View
         style={[
           styles.choices,
@@ -78,7 +82,7 @@ export function ChapterScreen({ navigation, route }) {
           />
         ))}
       </Animated.View>
-      <AudioPlayer uri={chapter.body.audio[0].url} onComplete={onComplete} soundRef={soundRef} />
+      <AudioPlayer uri={chapter.body.audio[0].url} onComplete={onComplete} parentSetSound={setSound} />
     </SafeAreaView>
   );
 }
