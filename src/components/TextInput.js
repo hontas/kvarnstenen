@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { TextInput, StyleSheet } from 'react-native';
 
 import COLORS from '../constants/colors';
-import TYPOGRAPHY from '../constants/typography';
+import * as TYPOGRAPHY from '../constants/typography';
 import LAYOUT from '../constants/layout';
 
 function Input({ placeholder, onChangeText, style }) {

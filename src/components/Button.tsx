@@ -1,20 +1,22 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import { Text, View, StyleSheet, TouchableOpacity, ViewPropTypes } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ViewStyle, TextStyle } from 'react-native';
 
 import COLORS from '../constants/colors';
-import TYPOGRAPHY from '../constants/typography';
+import * as TYPOGRAPHY from '../constants/typography';
 
-const propTypes = {
-  onPress: PropTypes.func.isRequired,
-  text: PropTypes.string,
-  style: ViewPropTypes.style,
-  textStyle: Text.propTypes.style,
-  children: PropTypes.element,
-  disabled: PropTypes.bool,
-};
+interface VariantProps {
+  children: JSX.Element;
+  disabled?: boolean;
+  onPress: () => void;
+  style?: ViewStyle | ViewStyle[];
+  text: string;
+}
 
-function Button({ onPress, text, style, textStyle, children, disabled, ...rest }) {
+interface Props extends VariantProps {
+  textStyle: TextStyle | TextStyle[];
+}
+
+function Button({ onPress, text, style, textStyle, children, disabled, ...rest }: Props) {
   return (
     <TouchableOpacity {...rest} disabled={disabled} style={[styles.container, style]} onPress={onPress}>
       <View>
@@ -24,35 +26,31 @@ function Button({ onPress, text, style, textStyle, children, disabled, ...rest }
     </TouchableOpacity>
   );
 }
-Button.propTypes = propTypes;
 
-export function Primary({ style, disabled, ...props }) {
+export function Primary({ style = {}, disabled, ...props }: VariantProps) {
+  const disabledStyles = disabled ? styles.primaryContainerDisabled : {};
+
   return (
     <Button
       disabled={disabled}
-      style={[styles.primaryContainer, disabled && styles.primaryContainerDisabled, style]}
+      style={[styles.primaryContainer, disabledStyles, style]}
       textStyle={styles.primaryText}
       {...props}
     />
   );
 }
-Primary.propTypes = propTypes;
 
-export function Secondary({ style, disabled, ...props }) {
+export function Secondary({ style = {}, disabled, ...props }: VariantProps) {
+  const disabledStyles = disabled ? styles.secondaryContainerDisabled : {};
+
   return (
-    <Button
-      style={[styles.secondaryContainer, disabled && styles.secondaryContainerDisabled, style]}
-      textStyle={styles.secondaryText}
-      {...props}
-    />
+    <Button style={[styles.secondaryContainer, disabledStyles, style]} textStyle={styles.secondaryText} {...props} />
   );
 }
-Secondary.propTypes = propTypes;
 
-export function Tertiary({ style, ...props }) {
+export function Tertiary({ style, ...props }: VariantProps) {
   return <Button style={style} textStyle={styles.tertiaryText} {...props} />;
 }
-Tertiary.propTypes = propTypes;
 
 const styles = StyleSheet.create({
   container: {
@@ -74,6 +72,7 @@ const styles = StyleSheet.create({
   secondaryContainer: {
     backgroundColor: COLORS.button.bg_secondary,
   },
+  secondaryContainerDisabled: {},
   secondaryText: {
     color: COLORS.button.text_secondary,
   },

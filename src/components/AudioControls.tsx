@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
 
-import Colors from '../constants/colors';
+import COLORS from '../constants/colors';
 
 const noop = () => {};
 
@@ -18,7 +18,7 @@ export const AudioControls = ({
 }: Props) => {
   const insets = useSafeAreaInsets();
   const btnStyles = styles.controlButton;
-  const btnColor = disabled ? Colors.whiteTransparent : Colors.white;
+  const btnColor = disabled ? COLORS.whiteTransparent : COLORS.white;
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom, marginBottom: -insets.bottom }]}>
@@ -47,7 +47,7 @@ interface Props {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.grayDark,
+    backgroundColor: COLORS.grayDark,
     flexDirection: 'row',
   },
   controlButton: {

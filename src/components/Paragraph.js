@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Text, StyleSheet } from 'react-native';
 
-import TYPOGRAPHY from '../constants/typography';
+import * as TYPOGRAPHY from '../constants/typography';
 
 export function Paragraph({ children, style }) {
   return <Text style={[styles.paragraph, style]}>{children}</Text>;

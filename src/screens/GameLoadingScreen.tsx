@@ -3,12 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 
 import useT from '../utils/useT';
-import { getChapters, selectScreen } from '../store/reducers/screens';
-import { screenPropTypes } from '../constants/propTypes';
+import { selectScreen } from '../store/reducers/screens';
+import { ScreenProps } from '../constants/types';
 import { ROUTE_NAMES } from '../constants/routes';
-import { selectChaptersLoading, selectChapters } from '../store/reducers/chapters';
+import { getChapters, selectChaptersLoading, selectChapters } from '../store/reducers/chapters';
 
-export function GameLoadingScreen({ navigation }) {
+type Props = ScreenProps;
+
+export function GameLoadingScreen({ navigation }: Props) {
   const dispatch = useDispatch();
   const chapters = useSelector(selectChapters);
   const chaptersLoading = useSelector(selectChaptersLoading);
@@ -42,13 +44,9 @@ export function GameLoadingScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ActivityIndicator size="large" />
       <Text>{t('loading_text')}</Text>
-      {/* <Button.Primary disabled={chaptersLoading} text="Go to first chapter" onPress={goToFirstChapter} /> */}
     </SafeAreaView>
   );
 }
-GameLoadingScreen.propTypes = {
-  ...screenPropTypes,
-};
 
 const styles = StyleSheet.create({
   container: {

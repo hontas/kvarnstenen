@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-import Colors from '../constants/colors';
+import COLORS from '../constants/colors';
 
 export const ProgressBar = ({ progress }) => {
   const [width, setWidth] = React.useState(0);
@@ -24,7 +24,7 @@ ProgressBar.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.gray,
+    backgroundColor: COLORS.gray,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   bar: {
-    backgroundColor: Colors.grayDark,
+    backgroundColor: COLORS.grayDark,
     position: 'absolute',
     width: '100%',
     height: 4,
