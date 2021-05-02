@@ -3,8 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 
 import useT from '../utils/useT';
-import { selectScreen } from '../store/reducers/screens';
-import { getChapters } from '../store/reducers/chapters';
+import { getChapters, selectScreen } from '../store/reducers/screens';
 import { screenPropTypes } from '../constants/propTypes';
 import { ROUTE_NAMES } from '../constants/routes';
 import { selectChaptersLoading, selectChapters } from '../store/reducers/chapters';

@@ -15,7 +15,7 @@ export const getScreens = () =>
     .query({
       query: schema.allScreens,
     })
-    .then(({ data, loading, networkStatus }) => {
+    .then(({ data }) => {
       const screens = data.screenCollection.items.reduce(
         (screens, screen) => ({
           ...screens,

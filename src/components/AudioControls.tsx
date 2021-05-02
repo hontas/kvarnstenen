@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
@@ -56,5 +55,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
-  controlButtonDisabled: {},
 });

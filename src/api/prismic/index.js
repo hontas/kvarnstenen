@@ -75,7 +75,7 @@ export const getChapters = async () => {
             (res, curr) => {
               switch (curr.__typename) {
                 case 'ChapterBodyAudioclip': {
-                  const { __typename, ...media } = curr.primary.media;
+                  const { ...media } = curr.primary.media;
                   return {
                     ...res,
                     audio: [...res.audio, { ...media }],

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Audio, AVPlaybackStatus } from 'expo-av';
+import { View, StyleSheet } from 'react-native';
+import { Audio } from 'expo-av';
 
 import { ProgressBar } from './ProgressBar';
 import { AudioControls } from './AudioControls';

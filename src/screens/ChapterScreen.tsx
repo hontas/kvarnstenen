@@ -10,7 +10,16 @@ import { Map } from '../components/Map';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { selectChapters } from '../store/reducers/chapters';
 
-export function ChapterScreen({ navigation, route }) {
+interface Props {
+  navigation: {
+    navigate: (path: string) => void;
+  };
+  route: {
+    name: string;
+  };
+}
+
+export function ChapterScreen({ navigation, route }: Props) {
   const routeName = route.name.split('/')[1];
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
