@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 export const client = new ApolloClient({
