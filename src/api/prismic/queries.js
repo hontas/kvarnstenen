@@ -40,30 +40,25 @@ export const getAllChapters = gql`
       edges {
         node {
           name
+          audio {
+            ... on _FileLink {
+              url
+              size
+              name
+            }
+          }
           geo_location
           geo_location_title
+          geo_location_image
           geo_location_description
           choices_headline
           choices {
+            choice_type
             choice_text
             chapter_link {
               ... on Chapter {
                 _meta {
                   uid
-                }
-              }
-            }
-          }
-          body {
-            ... on ChapterBodyAudioclip {
-              type
-              primary {
-                media {
-                  ... on _FileLink {
-                    url
-                    size
-                    name
-                  }
                 }
               }
             }

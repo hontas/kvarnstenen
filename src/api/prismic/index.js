@@ -67,27 +67,27 @@ export const getChapters = async () => {
       [chapter.node._meta.uid]: transformData(chapter.node, {
         choices: (choices) =>
           choices.map((choice) => ({
-            choice_text: choice.choice_text,
+            ...choice,
             chapter_link: choice.chapter_link?._meta.uid,
           })),
-        body: (value) =>
-          value.reduce(
-            (result, current) => {
-              switch (current.__typename) {
-                case 'ChapterBodyAudioclip': {
-                  const { ...media } = current.primary.media;
-                  return {
-                    ...result,
-                    audio: [...result.audio, { ...media }],
-                  };
-                }
-                default:
-                  console.log('Unhandled type', current.__typename);
-                  return { ...result, [current.__typename]: current };
-              }
-            },
-            { audio: [], edges: {} }
-          ),
+        // body: (value) =>
+        //   value.reduce(
+        //     (result, current) => {
+        //       switch (current.__typename) {
+        //         case 'ChapterBodyAudioclip': {
+        //           const { ...media } = current.primary.media;
+        //           return {
+        //             ...result,
+        //             audio: [...result.audio, { ...media }],
+        //           };
+        //         }
+        //         default:
+        //           console.log('Unhandled type', current.__typename);
+        //           return { ...result, [current.__typename]: current };
+        //       }
+        //     },
+        //     { audio: [], edges: {} }
+        //   ),
       }),
     }),
     {}
