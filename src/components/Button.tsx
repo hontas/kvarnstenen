@@ -9,7 +9,8 @@ interface VariantProps {
   disabled?: boolean;
   onPress: () => void;
   style?: ViewStyle | ViewStyle[];
-  text: string;
+  text?: string;
+  accessibilityLabel?: string;
 }
 
 interface Props extends VariantProps {

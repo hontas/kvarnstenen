@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Animated, StyleSheet, SafeAreaView, Text, TextInput } from 'react-native';
 import { Audio } from 'expo-av';
+import { Entypo } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoadingBoundary } from '../components/LoadingBoundary';
 import { Heading } from '../components/Heading';
@@ -13,10 +15,18 @@ import COLORS from '../constants/colors';
 
 interface Props {
   navigation: {
-    navigate: (path: string) => void;
+    navigate: (path: string, parameters?: { from: string }) => void;
+    goBack: () => void;
+    reset: (state: { index: number; routes: Record<string, any>[] }) => void;
+    setParams: (parameters: Record<string, any>) => void;
+    setOptions: (parameters: Record<string, any>) => void;
   };
   route: {
+    key: string;
     name: string;
+    params?: {
+      from: string;
+    };
   };
 }
 
@@ -24,8 +34,9 @@ export function ChapterScreen({ navigation, route }: Props) {
   const routeName = route.name.split('/')[1];
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
+  const insets = useSafeAreaInsets();
 
-  console.log('chapter', chapter);
+  const previousChapter = route.params?.from;
 
   const markerImage = chapter.geo_location_image && {
     uri: chapter.geo_location_image.url,
@@ -54,6 +65,16 @@ export function ChapterScreen({ navigation, route }: Props) {
     };
   }, [chapter, fadeAnim, onComplete]);
 
+  const goToPreviousScreen = async () => {
+    console.log('goToPreviousScreen');
+    if (sound) {
+      console.log('unloading sound from ChapterScreen');
+      await sound.unloadAsync();
+      console.log('unloaded');
+    }
+    navigation.goBack();
+  };
+
   const goToNextScreen = async (chapter_link) => {
     console.log('goToNextScreen');
     if (sound) {
@@ -61,11 +82,16 @@ export function ChapterScreen({ navigation, route }: Props) {
       await sound.unloadAsync();
       console.log('unloaded');
     }
-    navigation.navigate(`chapter/${chapter_link}`);
+    navigation.navigate(`chapter/${chapter_link}`, { from: `chapter/${chapter.path}` });
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {previousChapter && (
+        <Button.Tertiary onPress={goToPreviousScreen} style={[styles.backButton, { top: insets.top }]}>
+          <Entypo name="back" size={24} color={COLORS.whiteTransparent} />
+        </Button.Tertiary>
+      )}
       <Heading>{chapter.name}</Heading>
 
       <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">
@@ -135,6 +161,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  backButton: {
+    width: 'auto',
+    position: 'absolute',
+    left: 10,
   },
   choiceHeadline: {
     fontSize: 20,

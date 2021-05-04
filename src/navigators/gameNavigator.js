@@ -30,7 +30,6 @@ const commonOptions = {
 
 export function GameNavigator() {
   const chapters = useSelector(selectChapters);
-  // console.log('chapters', chapters);
   const screens = React.useMemo(() => {
     return Object.keys(chapters).sort();
   }, [chapters]);

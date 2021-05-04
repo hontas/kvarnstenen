@@ -48,7 +48,7 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
 
       const { sound, status } = await Audio.Sound.createAsync({ uri }, { shouldPlay: false }, onPlaybackStatusUpdate);
 
-      console.log('createAsync status', status);
+      // console.log('createAsync status', status);
       setSoundObject(sound);
       setIsLoaded(status.isLoaded);
 

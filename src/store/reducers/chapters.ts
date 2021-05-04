@@ -36,7 +36,7 @@ export const getChapters = () => async (dispatch) => {
   dispatch(fetchStarted());
   try {
     const chapters = await prismic.getChapters();
-    // console.log('chapters', chapters);
+    // console.log('chapters', chapters)
     dispatch(getChaptersSuccess(chapters));
     console.log('fetch chapters success');
   } catch (error) {
