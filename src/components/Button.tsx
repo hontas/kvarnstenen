@@ -5,7 +5,7 @@ import COLORS from '../constants/colors';
 import * as TYPOGRAPHY from '../constants/typography';
 
 interface VariantProps {
-  children: JSX.Element;
+  children?: JSX.Element;
   disabled?: boolean;
   onPress: () => void;
   style?: ViewStyle | ViewStyle[];

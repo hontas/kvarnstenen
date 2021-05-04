@@ -4,8 +4,8 @@ import { Text, StyleSheet, View, ViewStyle, TextStyle } from 'react-native';
 import * as TYPOGRAPHY from '../constants/typography';
 
 interface Props {
-  children: JSX.Element;
-  style: ViewStyle | TextStyle;
+  children: string | string[];
+  style?: ViewStyle | TextStyle;
 }
 
 export function Heading({ children, style }: Props) {
