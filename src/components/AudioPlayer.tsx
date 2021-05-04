@@ -13,29 +13,26 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [isLoaded, setIsLoaded] = React.useState(false);
 
-  const onPlaybackStatusUpdate = React.useCallback(
-    (status) => {
-      if (!status.isLoaded) {
-        setIsLoaded(false);
-        return;
-      }
+  const onPlaybackStatusUpdate = (status) => {
+    if (!status.isLoaded) {
+      setIsLoaded(false);
+      return;
+    }
 
-      const { isPlaying, durationMillis, positionMillis, didJustFinish } = status;
+    const { isPlaying, durationMillis, positionMillis, didJustFinish } = status;
 
-      // console.log('onPlayBackStatusUpdate', status);
+    // console.log('onPlayBackStatusUpdate', status);
 
-      setIsPlaying(isPlaying);
+    setIsPlaying(isPlaying);
 
-      if (durationMillis) {
-        setProgress(positionMillis / durationMillis);
-      }
+    if (durationMillis) {
+      setProgress(positionMillis / durationMillis);
+    }
 
-      if (didJustFinish) {
-        onComplete();
-      }
-    },
-    [onComplete]
-  );
+    if (didJustFinish) {
+      onComplete();
+    }
+  };
 
   const togglePlayState = React.useCallback(() => {
     if (!isPlaying) {
@@ -52,12 +49,12 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
       const { sound, status } = await Audio.Sound.createAsync({ uri }, { shouldPlay: false }, onPlaybackStatusUpdate);
 
       console.log('createAsync status', status);
-      parentSetSound(sound);
       setSoundObject(sound);
       setIsLoaded(status.isLoaded);
 
       await sound.setPositionAsync(0);
       await sound.playAsync();
+      parentSetSound(sound);
     };
 
     const unloadSound = async () => {
@@ -75,7 +72,7 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
     return () => {
       unloadSound();
     };
-  }, [uri, parentSetSound, soundObject, onPlaybackStatusUpdate]);
+  }, [uri]);
 
   const rewind = () =>
     soundObject?.getStatusAsync().then((status) => {
