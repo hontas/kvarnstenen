@@ -12,7 +12,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint . --fix",
+      "eslint --fix",
       "prettier --write"
     ]
   },
@@ -54,7 +54,9 @@
     "eslint": "^7.22.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-react-native": "^3.10.0",
+    "eslint-plugin-unicorn": "^31.0.0",
     "husky": "^6.0.0",
     "prettier": "^2.2.1",
     "prop-types": "^15.7.2",
