@@ -13,26 +13,29 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [isLoaded, setIsLoaded] = React.useState(false);
 
-  const onPlaybackStatusUpdate = (status) => {
-    if (!status.isLoaded) {
-      setIsLoaded(false);
-      return;
-    }
+  const onPlaybackStatusUpdate = React.useCallback(
+    (status) => {
+      if (!status.isLoaded) {
+        setIsLoaded(false);
+        return;
+      }
 
-    const { isPlaying, durationMillis, positionMillis, didJustFinish } = status;
+      const { isPlaying, durationMillis, positionMillis, didJustFinish } = status;
 
-    // console.log('onPlayBackStatusUpdate', status);
+      // console.log('onPlayBackStatusUpdate', status);
 
-    setIsPlaying(isPlaying);
+      setIsPlaying(isPlaying);
 
-    if (durationMillis) {
-      setProgress(positionMillis / durationMillis);
-    }
+      if (durationMillis) {
+        setProgress(positionMillis / durationMillis);
+      }
 
-    if (didJustFinish) {
-      onComplete();
-    }
-  };
+      if (didJustFinish) {
+        onComplete();
+      }
+    },
+    [onComplete]
+  );
 
   const togglePlayState = React.useCallback(() => {
     if (!isPlaying) {
@@ -72,7 +75,7 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
     return () => {
       unloadSound();
     };
-  }, [uri]);
+  }, [uri, parentSetSound, soundObject, onPlaybackStatusUpdate]);
 
   const rewind = () =>
     soundObject?.getStatusAsync().then((status) => {

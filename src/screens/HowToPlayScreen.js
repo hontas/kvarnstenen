@@ -17,7 +17,7 @@ export function HowToPlayScreen({ navigation }) {
     if (screen) {
       navigation.setOptions({ title: screen.name });
     }
-  }, [screen]);
+  }, [screen, navigation]);
 
   const goBack = React.useCallback(() => {
     navigation.goBack();

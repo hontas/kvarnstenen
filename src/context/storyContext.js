@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-const StoryContext = React.createContext(null);
+const StoryContext = React.createContext();
 
 const initialState = {};
 
@@ -39,7 +39,7 @@ function reducer(state, action) {
       };
     }
     default:
-      throw Error(`Unhandled action type ${action.type}`);
+      throw new Error(`Unhandled action type ${action.type}`);
   }
 }
 

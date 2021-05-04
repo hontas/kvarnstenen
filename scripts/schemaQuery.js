@@ -1,19 +1,19 @@
-const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
+const fetch = require('node-fetch');
 
 const repoId = 'kvarnstenen';
 
 fetch(`https://${repoId}.prismic.io/api`)
   .then((r) => r.json())
   .then((data) => {
-    const ref = data.refs.find((r) => r.id === 'master');
-    if (!ref) return;
+    const reference = data.refs.find((r) => r.id === 'master');
+    if (!reference) return;
     fetch(
       `https://${repoId}.prismic.io/graphql?query=%7B%20__schema%20%7B%20types%20%7B%20kind%20name%20possibleTypes%20%7B%20name%20%7D%20%7D%20%7D%20%7D`,
       {
         headers: {
-          'prismic-ref': ref.ref,
+          'prismic-ref': reference.ref,
         },
       }
     )
@@ -25,9 +25,9 @@ fetch(`https://${repoId}.prismic.io/api`)
         fs.writeFileSync(
           path.resolve(__dirname, '../src/utils/fragmentTypes.json'),
           JSON.stringify(filteredResults.data),
-          (err) => {
-            if (err) {
-              console.error('Error writing fragmentTypes file', err);
+          (error) => {
+            if (error) {
+              console.error('Error writing fragmentTypes file', error);
             } else {
               console.log('Fragment types successfully extracted!');
             }

@@ -25,7 +25,7 @@ export function GameLoadingScreen({ navigation }: Props) {
 
   const goToFirstChapter = useCallback(() => {
     navigation.navigate(ROUTE_NAMES.START_GAME);
-  }, [navigation, firstChapter]);
+  }, [navigation]);
 
   useEffect(() => {
     if (firstChapter && !chaptersLoading) {
@@ -38,7 +38,7 @@ export function GameLoadingScreen({ navigation }: Props) {
     if (!firstChapter && !chaptersLoading) {
       dispatch(getChapters());
     }
-  }, [firstChapter, chaptersLoading, getChapters]);
+  }, [firstChapter, chaptersLoading, dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>

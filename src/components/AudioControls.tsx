@@ -17,19 +17,19 @@ export const AudioControls = ({
   isPlaying,
 }: Props) => {
   const insets = useSafeAreaInsets();
-  const btnStyles = styles.controlButton;
-  const btnColor = disabled ? COLORS.whiteTransparent : COLORS.white;
+  const buttonStyles = styles.controlButton;
+  const buttonColor = disabled ? COLORS.whiteTransparent : COLORS.white;
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom, marginBottom: -insets.bottom }]}>
-      <TouchableOpacity disabled={disabled} style={btnStyles} onPress={onRewind} onLongPress={onLongRewind}>
-        <Entypo name="controller-fast-backward" size={24} color={btnColor} />
+      <TouchableOpacity disabled={disabled} style={buttonStyles} onPress={onRewind} onLongPress={onLongRewind}>
+        <Entypo name="controller-fast-backward" size={24} color={buttonColor} />
       </TouchableOpacity>
-      <TouchableOpacity disabled={disabled} style={btnStyles} onPress={onPlayPause}>
-        <Entypo name={isPlaying ? 'controller-paus' : 'controller-play'} size={24} color={btnColor} />
+      <TouchableOpacity disabled={disabled} style={buttonStyles} onPress={onPlayPause}>
+        <Entypo name={isPlaying ? 'controller-paus' : 'controller-play'} size={24} color={buttonColor} />
       </TouchableOpacity>
-      <TouchableOpacity disabled={disabled} style={btnStyles} onPress={onForwards} onLongPress={onLongForwards}>
-        <Entypo name="controller-fast-forward" size={24} color={btnColor} />
+      <TouchableOpacity disabled={disabled} style={buttonStyles} onPress={onForwards} onLongPress={onLongForwards}>
+        <Entypo name="controller-fast-forward" size={24} color={buttonColor} />
       </TouchableOpacity>
     </View>
   );

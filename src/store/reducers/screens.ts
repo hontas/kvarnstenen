@@ -57,7 +57,7 @@ export const selectScreensError = (state) => state.screens.error;
 
 const initialState = {
   isLoading: false,
-  error: null,
+  error: undefined,
   screens: {},
 };
 
@@ -74,7 +74,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: null,
+        error: undefined,
         screens: action.payload,
       };
     }

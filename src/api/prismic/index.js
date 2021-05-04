@@ -72,18 +72,18 @@ export const getChapters = async () => {
           })),
         body: (value) =>
           value.reduce(
-            (res, curr) => {
-              switch (curr.__typename) {
+            (result, current) => {
+              switch (current.__typename) {
                 case 'ChapterBodyAudioclip': {
-                  const { ...media } = curr.primary.media;
+                  const { ...media } = current.primary.media;
                   return {
-                    ...res,
-                    audio: [...res.audio, { ...media }],
+                    ...result,
+                    audio: [...result.audio, { ...media }],
                   };
                 }
                 default:
-                  console.log('Unhandled type', curr.__typename);
-                  return { ...res, [curr.__typename]: curr };
+                  console.log('Unhandled type', current.__typename);
+                  return { ...result, [current.__typename]: current };
               }
             },
             { audio: [], edges: {} }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-const UserContext = React.createContext(null);
+const UserContext = React.createContext();
 
 export const UserProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(userReducer, {});
@@ -37,7 +37,7 @@ function userReducer(state, action) {
       };
     }
     default:
-      throw Error(`Unhandled action type ${action.type}`);
+      throw new Error(`Unhandled action type ${action.type}`);
   }
 }
 

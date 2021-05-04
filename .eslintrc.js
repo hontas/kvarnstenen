@@ -49,6 +49,14 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['scripts/*.js', '*.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': [0],
+      },
+    },
+  ],
   settings: {
     'import/ignore': ['node_modules/react-native/index\\.js$'],
     react: {

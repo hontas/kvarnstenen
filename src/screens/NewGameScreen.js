@@ -30,11 +30,11 @@ export function NewGameScreen({ navigation }) {
     if (screen) {
       navigation.setOptions({ title: screen.name });
     }
-  }, [screen]);
+  }, [screen, navigation]);
 
   useEffect(() => {
     dispatch(getChapters());
-  }, [getChapters]);
+  }, [dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>
