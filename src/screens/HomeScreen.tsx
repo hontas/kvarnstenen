@@ -9,8 +9,11 @@ import * as Button from '../components/Button';
 import { Heading } from '../components/Heading';
 import { LoadingScreen } from './LoadingScreen';
 import { ROUTE_NAMES } from '../constants/routes';
+import { ScreenProps } from '../constants/types';
 
-export function HomeScreen({ navigation }) {
+type Props = ScreenProps;
+
+export function HomeScreen({ navigation }: Props) {
   const newGame = useCallback(() => {
     // reset gameplay
     navigation.navigate(ROUTE_NAMES.GAME_LOADING);
@@ -25,10 +28,10 @@ export function HomeScreen({ navigation }) {
     if (screen) {
       navigation.setOptions({ title: screen.name });
     }
-  }, [screen]);
+  }, [screen, navigation]);
 
+  if (error) return <Heading>Ngt gick snett {error}</Heading>;
   if (isLoading) return <LoadingScreen />;
-  if (error) return <Heading>Ngt gick snett</Heading>;
 
   return (
     <SafeAreaView style={styles.container}>
