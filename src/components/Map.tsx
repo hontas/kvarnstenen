@@ -93,6 +93,7 @@ interface Properties {
 
 const styles = StyleSheet.create({
   map: {
+    flex: 1,
     width: SCREEN.width,
     height: SCREEN.width,
   },

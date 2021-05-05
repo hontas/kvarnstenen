@@ -1,9 +1,19 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { Animated, StyleSheet, SafeAreaView, Text, TextInput } from 'react-native';
-import { Audio } from 'expo-av';
-import { Entypo } from '@expo/vector-icons';
+import {
+  Animated,
+  ScrollView,
+  StyleSheet,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  Platform,
+  Text,
+  TextInput,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Entypo } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
+import { useKeepAwake } from 'expo-keep-awake';
 
 import { LoadingBoundary } from '../components/LoadingBoundary';
 import { Heading } from '../components/Heading';
@@ -31,6 +41,7 @@ interface Props {
 }
 
 export function ChapterScreen({ navigation, route }: Props) {
+  useKeepAwake();
   const routeName = route.name.split('/')[1];
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
@@ -86,78 +97,90 @@ export function ChapterScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {previousChapter && (
-        <Button.Tertiary onPress={goToPreviousScreen} style={[styles.backButton, { top: insets.top }]}>
-          <Entypo name="back" size={24} color={COLORS.whiteTransparent} />
-        </Button.Tertiary>
-      )}
-      <Heading>{chapter.name}</Heading>
+    <KeyboardAvoidingView style={styles.outerContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {previousChapter && (
+            <Button.Tertiary onPress={goToPreviousScreen} style={styles.backButton}>
+              <Entypo name="back" size={24} color={COLORS.whiteTransparent} />
+            </Button.Tertiary>
+          )}
+          <Heading>{chapter.name}</Heading>
 
-      <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">
-        {chapter.geo_location && (
-          <Map
-            latLng={chapter.geo_location}
-            markerTitle={chapter.geo_location_title}
-            markerDescription={chapter.geo_location_description}
-            markerImage={markerImage}
-          />
-        )}
-      </LoadingBoundary>
-
-      <Animated.View
-        style={[
-          styles.choices,
-          {
-            opacity: fadeAnim,
-            transform: [
-              {
-                translateY: fadeAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [50, 0],
-                  extrapolate: 'clamp',
-                }),
-              },
-            ],
-          },
-        ]}
-      >
-        <Text style={styles.choiceHeadline}>{chapter.choices_headline}</Text>
-        {chapter.choices.map(({ choice_type, choice_text, chapter_link }, index) => {
-          if (choice_type === 'password') {
-            return (
-              <TextInput
-                key={chapter_link || index}
-                style={styles.input}
-                onChangeText={(password) => {
-                  if (password.toLowerCase() === choice_text.toLowerCase()) {
-                    goToNextScreen(chapter_link);
-                  }
-                }}
+          <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">
+            {chapter.geo_location && (
+              <Map
+                latLng={chapter.geo_location}
+                markerTitle={chapter.geo_location_title}
+                markerDescription={chapter.geo_location_description}
+                markerImage={markerImage}
               />
-            );
-          }
+            )}
+          </LoadingBoundary>
 
-          if (!chapter_link) return;
+          <Animated.View
+            style={[
+              styles.choices,
+              {
+                opacity: fadeAnim,
+                transform: [
+                  {
+                    translateY: fadeAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [50, 0],
+                      extrapolate: 'clamp',
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            <Text style={styles.choiceHeadline}>{chapter.choices_headline}</Text>
+            {chapter.choices.map(({ choice_type, choice_text, chapter_link }, index) => {
+              if (choice_type === 'password') {
+                return (
+                  <TextInput
+                    key={chapter_link || index}
+                    style={styles.input}
+                    onChangeText={(password) => {
+                      if (password.toLowerCase() === choice_text.toLowerCase()) {
+                        goToNextScreen(chapter_link);
+                      }
+                    }}
+                  />
+                );
+              }
 
-          return (
-            <Button.Primary
-              disabled={false}
-              key={chapter_link || index}
-              text={choice_text}
-              style={styles.button}
-              onPress={() => goToNextScreen(chapter_link)}
-            />
-          );
-        })}
-      </Animated.View>
-      {chapter.audio && <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />}
-    </SafeAreaView>
+              if (!chapter_link) return;
+
+              return (
+                <Button.Primary
+                  disabled={false}
+                  key={chapter_link || index}
+                  text={choice_text}
+                  style={styles.button}
+                  onPress={() => goToNextScreen(chapter_link)}
+                />
+              );
+            })}
+          </Animated.View>
+        </ScrollView>
+        {chapter.audio && <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />}
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+  },
   container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  scrollView: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -166,6 +189,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     position: 'absolute',
     left: 10,
+    top: 0,
   },
   choiceHeadline: {
     fontSize: 20,
