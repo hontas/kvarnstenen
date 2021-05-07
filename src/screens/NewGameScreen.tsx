@@ -8,10 +8,10 @@ import { selectUserName, setUserName } from '../store/reducers/user';
 import { selectScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { TextInput } from '../components/TextInput';
-import { screenPropTypes } from '../constants/propTypes';
+import { ScreenProps } from '../constants/types';
 import { ROUTE_NAMES } from '../constants/routes';
 
-export function NewGameScreen({ navigation }) {
+export function NewGameScreen({ navigation }: ScreenProps) {
   const dispatch = useDispatch();
   const userName = useSelector(selectUserName);
   const screen = useSelector(selectScreen('new-game'));
@@ -44,10 +44,6 @@ export function NewGameScreen({ navigation }) {
     </SafeAreaView>
   );
 }
-
-NewGameScreen.propTypes = {
-  ...screenPropTypes,
-};
 
 const styles = StyleSheet.create({
   container: {

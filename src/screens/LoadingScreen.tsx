@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 
-import PropTypes, { childrenPropType } from '../constants/propTypes';
 import { Heading } from '../components/Heading';
-export function LoadingScreen({ children, text }) {
+
+interface Props {
+  children: React.ElementType;
+  text?: string;
+}
+
+export function LoadingScreen({ children, text }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       {text ? <Heading>{text}</Heading> : children}
@@ -11,11 +16,6 @@ export function LoadingScreen({ children, text }) {
     </SafeAreaView>
   );
 }
-
-LoadingScreen.propTypes = {
-  children: childrenPropType,
-  text: PropTypes.string,
-};
 
 const styles = StyleSheet.create({
   container: {

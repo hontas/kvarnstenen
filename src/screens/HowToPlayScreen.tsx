@@ -7,9 +7,9 @@ import { selectScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
 import { Paragraph } from '../components/Paragraph';
 import { Heading } from '../components/Heading';
-import { screenPropTypes } from '../constants/propTypes';
+import { ScreenProps } from '../constants/types';
 
-export function HowToPlayScreen({ navigation }) {
+export function HowToPlayScreen({ navigation }: ScreenProps) {
   const screen = useSelector(selectScreen('how-to-play'));
   const t = useT(screen?.ui_texts);
 
@@ -37,9 +37,6 @@ export function HowToPlayScreen({ navigation }) {
     </SafeAreaView>
   );
 }
-HowToPlayScreen.propTypes = {
-  ...screenPropTypes,
-};
 
 const styles = StyleSheet.create({
   container: {
