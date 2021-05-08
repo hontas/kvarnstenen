@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Text, StyleSheet, SafeAreaView } from 'react-native';
 
 import useT from '../utils/useT';
-import { getChapters } from '../store/reducers/chapters';
 import { selectUserName, setUserName } from '../store/reducers/user';
 import { selectScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
@@ -32,15 +31,16 @@ export function NewGameScreen({ navigation }: ScreenProps) {
     }
   }, [screen, navigation]);
 
-  useEffect(() => {
-    dispatch(getChapters());
-  }, [dispatch]);
-
   return (
     <SafeAreaView style={styles.container}>
       <Text>{screen.title}</Text>
       <TextInput placeholder={t('name_input_placeholder')} onChangeText={handleChangeText} />
-      <Button.Primary disabled={!userName} text={t('start_game')} style={styles.button} onPress={startGame} />
+      <Button.Primary
+        disabled={!userName}
+        text={t('start_game')}
+        style={styles.button}
+        onPress={startGame}
+      />
     </SafeAreaView>
   );
 }

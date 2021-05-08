@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import useT from '../utils/useT';
 import { screenPropTypes } from '../constants/propTypes';
 import { selectScreen, selectScreensLoading, selectScreensError } from '../store/reducers/screens';
+import { selectSlotsList, createNewGame } from '../store/reducers/game';
 import * as Button from '../components/Button';
 import { Heading } from '../components/Heading';
 import { LoadingScreen } from './LoadingScreen';
@@ -14,15 +15,19 @@ import { ScreenProps } from '../constants/types';
 type Props = ScreenProps;
 
 export function HomeScreen({ navigation }: Props) {
-  const newGame = useCallback(() => {
-    // reset gameplay
-    navigation.navigate(ROUTE_NAMES.GAME_LOADING);
-  }, [navigation]);
-  const hasSavedGames = true;
+  const dispatch = useDispatch();
   const isLoading = useSelector(selectScreensLoading);
   const error = useSelector(selectScreensError);
   const screen = useSelector(selectScreen('home'));
+  const slotsArray = useSelector(selectSlotsList);
+  const hasSavedGames = slotsArray.length > 0;
   const t = useT(screen?.ui_texts);
+
+  const newGame = useCallback(async () => {
+    // reset gameplay
+    await dispatch(createNewGame());
+    navigation.navigate(ROUTE_NAMES.GAME_LOADING);
+  }, [navigation, dispatch]);
 
   useEffect(() => {
     if (screen) {

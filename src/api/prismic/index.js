@@ -60,6 +60,12 @@ function getUITexts(texts, { text_key, text_value }) {
 
 export const getChapters = async () => {
   const response = await queryClient(queries.getAllChapters);
+
+  if (!response.allChapters) {
+    console.log('[getChapters] error', response);
+    throw new Error('Could not fetch chapters');
+  }
+
   // console.log('response.allChapters.edges', response.allChapters.edges);
   return response.allChapters.edges.reduce(
     (chapters, chapter) => ({
@@ -70,24 +76,6 @@ export const getChapters = async () => {
             ...choice,
             chapter_link: choice.chapter_link?._meta.uid,
           })),
-        // body: (value) =>
-        //   value.reduce(
-        //     (result, current) => {
-        //       switch (current.__typename) {
-        //         case 'ChapterBodyAudioclip': {
-        //           const { ...media } = current.primary.media;
-        //           return {
-        //             ...result,
-        //             audio: [...result.audio, { ...media }],
-        //           };
-        //         }
-        //         default:
-        //           console.log('Unhandled type', current.__typename);
-        //           return { ...result, [current.__typename]: current };
-        //       }
-        //     },
-        //     { audio: [], edges: {} }
-        //   ),
       }),
     }),
     {}

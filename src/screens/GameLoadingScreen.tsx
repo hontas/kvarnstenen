@@ -10,6 +10,7 @@ import { getChapters, selectChaptersLoading, selectChapters } from '../store/red
 
 type Props = ScreenProps;
 
+// TODO: remove this? Do we need it? 🤔
 export function GameLoadingScreen({ navigation }: Props) {
   const dispatch = useDispatch();
   const chapters = useSelector(selectChapters);
@@ -29,7 +30,7 @@ export function GameLoadingScreen({ navigation }: Props) {
 
   useEffect(() => {
     if (firstChapter && !chaptersLoading) {
-      console.log('navigate!');
+      console.log('goToFirstChapter', `chapter/${firstChapter}`);
       setTimeout(() => goToFirstChapter(), 1000);
     }
   }, [firstChapter, chaptersLoading, goToFirstChapter]);
