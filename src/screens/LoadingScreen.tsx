@@ -4,7 +4,7 @@ import { StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Heading } from '../components/Heading';
 
 interface Props {
-  children: React.ElementType;
+  children?: React.ElementType;
   text?: string;
 }
 

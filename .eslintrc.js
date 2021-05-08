@@ -25,7 +25,10 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', 'import', 'react-native', '@typescript-eslint', 'unicorn'],
   rules: {
-    'import/order': ['warn', { groups: ['builtin', 'external', ['parent', 'sibling', 'index']] }],
+    'import/order': [
+      'warn',
+      { 'newlines-between': 'always', groups: ['builtin', 'external', ['parent', 'sibling', 'index']] },
+    ],
     'react-native/sort-styles': 0,
     'react-native/no-raw-text': ['error', { skip: ['Paragraph', 'Heading'] }],
     '@typescript-eslint/explicit-module-boundary-types': 0,
