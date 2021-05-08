@@ -5,14 +5,12 @@ import { Entypo } from '@expo/vector-icons';
 
 import COLORS from '../constants/colors';
 
-const noop = () => {};
-
 export const AudioControls = ({
   disabled,
   onRewind,
-  onLongRewind = noop,
+  onLongRewind,
   onPlayPause,
-  onForwards = noop,
+  onForwards,
   onLongForwards,
   isPlaying,
 }: Props) => {
@@ -21,14 +19,30 @@ export const AudioControls = ({
   const buttonColor = disabled ? COLORS.whiteTransparent : COLORS.white;
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom, marginBottom: -insets.bottom }]}>
-      <TouchableOpacity disabled={disabled} style={buttonStyles} onPress={onRewind} onLongPress={onLongRewind}>
+    <View
+      style={[styles.container, { paddingBottom: insets.bottom, marginBottom: -insets.bottom }]}
+    >
+      <TouchableOpacity
+        disabled={disabled}
+        style={buttonStyles}
+        onPress={onRewind}
+        onLongPress={onLongRewind}
+      >
         <Entypo name="controller-fast-backward" size={24} color={buttonColor} />
       </TouchableOpacity>
       <TouchableOpacity disabled={disabled} style={buttonStyles} onPress={onPlayPause}>
-        <Entypo name={isPlaying ? 'controller-paus' : 'controller-play'} size={24} color={buttonColor} />
+        <Entypo
+          name={isPlaying ? 'controller-paus' : 'controller-play'}
+          size={24}
+          color={buttonColor}
+        />
       </TouchableOpacity>
-      <TouchableOpacity disabled={disabled} style={buttonStyles} onPress={onForwards} onLongPress={onLongForwards}>
+      <TouchableOpacity
+        disabled={disabled}
+        style={buttonStyles}
+        onPress={onForwards}
+        onLongPress={onLongForwards}
+      >
         <Entypo name="controller-fast-forward" size={24} color={buttonColor} />
       </TouchableOpacity>
     </View>
