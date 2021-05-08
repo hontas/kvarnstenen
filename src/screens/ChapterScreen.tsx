@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Animated,
   ScrollView,
@@ -10,7 +10,6 @@ import {
   Text,
   TextInput,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -21,33 +20,19 @@ import * as Button from '../components/Button';
 import { Map } from '../components/Map';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { selectChapters } from '../store/reducers/chapters';
+import { setCurrentChapter } from '../store/reducers/game';
 import COLORS from '../constants/colors';
+import { ScreenProps } from '../constants/types';
 
-interface Props {
-  navigation: {
-    navigate: (path: string, parameters?: { from: string }) => void;
-    goBack: () => void;
-    reset: (state: { index: number; routes: Record<string, any>[] }) => void;
-    setParams: (parameters: Record<string, any>) => void;
-    setOptions: (parameters: Record<string, any>) => void;
-  };
-  route: {
-    key: string;
-    name: string;
-    params?: {
-      from: string;
-    };
-  };
-}
-
-export function ChapterScreen({ navigation, route }: Props) {
+export function ChapterScreen({ navigation, route }: ScreenProps) {
   useKeepAwake();
+  const dispatch = useDispatch();
   const routeName = route.name.split('/')[1];
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
-  const insets = useSafeAreaInsets();
 
-  const previousChapter = route.params?.from;
+  const previousChapterPath = route.params?.from;
+  const previousChapter = previousChapterPath && chapters[previousChapterPath.split('/')[1]];
 
   const markerImage = chapter.geo_location_image && {
     uri: chapter.geo_location_image.url,
@@ -78,11 +63,15 @@ export function ChapterScreen({ navigation, route }: Props) {
 
   const goToPreviousScreen = async () => {
     console.log('goToPreviousScreen');
+    if (!previousChapterPath) return;
+
     if (sound) {
       console.log('unloading sound from ChapterScreen');
       await sound.unloadAsync();
       console.log('unloaded');
     }
+
+    dispatch(setCurrentChapter(previousChapterPath, previousChapter.name));
     navigation.goBack();
   };
 
@@ -93,14 +82,19 @@ export function ChapterScreen({ navigation, route }: Props) {
       await sound.unloadAsync();
       console.log('unloaded');
     }
+
+    dispatch(setCurrentChapter(`chapter/${chapter_link}`, chapters[chapter_link].name));
     navigation.navigate(`chapter/${chapter_link}`, { from: `chapter/${chapter.path}` });
   };
 
   return (
-    <KeyboardAvoidingView style={styles.outerContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView
+      style={styles.outerContainer}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          {previousChapter && (
+          {previousChapterPath && (
             <Button.Tertiary onPress={goToPreviousScreen} style={styles.backButton}>
               <Entypo name="back" size={24} color={COLORS.whiteTransparent} />
             </Button.Tertiary>
@@ -165,7 +159,9 @@ export function ChapterScreen({ navigation, route }: Props) {
             })}
           </Animated.View>
         </ScrollView>
-        {chapter.audio && <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />}
+        {chapter.audio && (
+          <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />
+        )}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
