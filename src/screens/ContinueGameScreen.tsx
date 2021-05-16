@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, StyleSheet, SafeAreaView, View } from 'react-native';
+import { Text, StyleSheet, SafeAreaView, View, ScrollView } from 'react-native';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { Entypo } from '@expo/vector-icons';
 
@@ -11,9 +11,12 @@ import {
   removeSlot,
   CurrentChapter,
 } from '../store/reducers/game';
+import { selectScreen } from '../store/reducers/screens';
 import COLORS from '../constants/colors';
 import { ROUTE_NAMES } from '../constants/routes';
 import { ScreenProps } from '../constants/types';
+import { Heading } from '../components/Heading';
+import { BackButton } from '../components/BackButton';
 
 const transitionDuration = 350;
 const transition = (
@@ -27,6 +30,13 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
   const dispatch = useDispatch();
   const slotsArray = useSelector(selectSlotsList);
   const transitionReference = React.useRef<TransitioningView>(null);
+  const screen = useSelector(selectScreen('continue-game'));
+
+  React.useEffect(() => {
+    if (screen) {
+      navigation.setOptions({ title: screen.name });
+    }
+  }, [screen, navigation]);
 
   const slots = React.useMemo(
     () =>
@@ -67,33 +77,41 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
     [dispatch]
   );
 
+  const goBack = React.useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Transitioning.View
-        style={styles.transitionContainer}
-        transition={transition}
-        ref={transitionReference}
-      >
-        {slots.map(({ id, chapterPath, title, subTitle }) => {
-          return (
-            <View key={id} style={styles.buttonContainer}>
-              <Button.Primary
-                text={title}
-                style={styles.button}
-                onPress={() => navigateToChapter({ chapterPath, slotId: id })}
-              >
-                <Text style={styles.buttonSubText}>{subTitle}</Text>
-              </Button.Primary>
-              <Button.Secondary
-                style={[styles.button, styles.buttonRemove]}
-                onPress={() => onRemoveSlot(id)}
-              >
-                <Entypo name="trash" size={24} color={'black'} />
-              </Button.Secondary>
-            </View>
-          );
-        })}
-      </Transitioning.View>
+      <BackButton onPress={goBack} style={styles.backButton} />
+      <ScrollView>
+        <Heading level={2}>{screen.title}</Heading>
+        <Transitioning.View
+          style={styles.transitionContainer}
+          transition={transition}
+          ref={transitionReference}
+        >
+          {slots.map(({ id, chapterPath, title, subTitle }) => {
+            return (
+              <View key={id} style={styles.buttonContainer}>
+                <Button.Primary
+                  text={title}
+                  style={styles.button}
+                  onPress={() => navigateToChapter({ chapterPath, slotId: id })}
+                >
+                  <Text style={styles.buttonSubText}>{subTitle}</Text>
+                </Button.Primary>
+                <Button.Secondary
+                  style={[styles.button, styles.buttonRemove]}
+                  onPress={() => onRemoveSlot(id)}
+                >
+                  <Entypo name="trash" size={24} color={'black'} />
+                </Button.Secondary>
+              </View>
+            );
+          })}
+        </Transitioning.View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -103,6 +121,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 50,
     marginHorizontal: 20,
+  },
+  backButton: {
+    marginLeft: -10,
   },
   transitionContainer: {
     flex: 1,

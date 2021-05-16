@@ -29,7 +29,7 @@ const routes = [
     name: ROUTE_NAMES.CONTINUE_GAME,
     component: ContinueGameScreen,
     options: {
-      headerShown: true,
+      headerShown: false,
     },
   },
   {
