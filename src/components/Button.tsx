@@ -4,22 +4,24 @@ import { Text, View, StyleSheet, TouchableOpacity, ViewStyle, TextStyle } from '
 import COLORS from '../constants/colors';
 import * as TYPOGRAPHY from '../constants/typography';
 
-interface VariantProps {
+interface Props {
   children?: JSX.Element;
   disabled?: boolean;
   onPress: () => void;
   style?: ViewStyle | ViewStyle[];
+  textStyle?: TextStyle | TextStyle[];
   text?: string;
   accessibilityLabel?: string;
 }
 
-interface Props extends VariantProps {
-  textStyle: TextStyle | TextStyle[];
-}
-
 function Button({ onPress, text, style, textStyle, children, disabled, ...rest }: Props) {
   return (
-    <TouchableOpacity {...rest} disabled={disabled} style={[styles.container, style]} onPress={onPress}>
+    <TouchableOpacity
+      {...rest}
+      disabled={disabled}
+      style={[styles.container, style]}
+      onPress={onPress}
+    >
       <View>
         {text && <Text style={[styles.text, textStyle]}>{text}</Text>}
         {children}
@@ -28,29 +30,33 @@ function Button({ onPress, text, style, textStyle, children, disabled, ...rest }
   );
 }
 
-export function Primary({ style = {}, disabled, ...props }: VariantProps) {
+export function Primary({ style = {}, textStyle = {}, disabled, ...props }: Props) {
   const disabledStyles = disabled ? styles.primaryContainerDisabled : {};
 
   return (
     <Button
       disabled={disabled}
       style={[styles.primaryContainer, disabledStyles, style]}
-      textStyle={styles.primaryText}
+      textStyle={[styles.primaryText, textStyle]}
       {...props}
     />
   );
 }
 
-export function Secondary({ style = {}, disabled, ...props }: VariantProps) {
+export function Secondary({ style = {}, textStyle = {}, disabled, ...props }: Props) {
   const disabledStyles = disabled ? styles.secondaryContainerDisabled : {};
 
   return (
-    <Button style={[styles.secondaryContainer, disabledStyles, style]} textStyle={styles.secondaryText} {...props} />
+    <Button
+      style={[styles.secondaryContainer, disabledStyles, style]}
+      textStyle={[styles.secondaryText, textStyle]}
+      {...props}
+    />
   );
 }
 
-export function Tertiary({ style, ...props }: VariantProps) {
-  return <Button style={style} textStyle={styles.tertiaryText} {...props} />;
+export function Tertiary({ style = {}, textStyle = {}, ...props }: Props) {
+  return <Button style={style} textStyle={[styles.tertiaryText, textStyle]} {...props} />;
 }
 
 const styles = StyleSheet.create({
