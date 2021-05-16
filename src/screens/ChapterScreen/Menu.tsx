@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { Modal, View, StyleSheet, SafeAreaView, Pressable, Text } from 'react-native';
+import { Modal, View, StyleSheet, Pressable, Text } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import useT from '../../utils/useT';
 import { selectScreen } from '../../store/reducers/screens';
@@ -17,20 +18,24 @@ interface Props extends Pick<ScreenProps, 'navigation'> {
 }
 
 export const Menu = ({ navigation, onDismiss, visible }: Props) => {
+  const insets = useSafeAreaInsets();
   const screen = useSelector(selectScreen('chapter'));
   const t = useT(screen?.ui_texts);
 
   return (
     <Modal visible={visible} animationType="fade" transparent={true}>
-      <SafeAreaView style={styles.backDrop}>
+      <View style={styles.backDrop}>
         <Pressable onPress={onDismiss} style={styles.backDropButton}>
           <View style={styles.backDropButton} />
         </Pressable>
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingBottom: insets.bottom + 30 }]}>
           <Heading level={3}>{t('menu_title')}</Heading>
           <View>
             <Button.Secondary
-              onPress={() => navigation.navigate(ROUTE_NAMES.HOME)}
+              onPress={() => {
+                navigation.navigate(ROUTE_NAMES.HOME);
+                onDismiss();
+              }}
               style={styles.button}
             >
               <Entypo name="home" size={24} />
@@ -48,7 +53,7 @@ export const Menu = ({ navigation, onDismiss, visible }: Props) => {
             </Button.Secondary>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };
@@ -67,7 +72,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     paddingHorizontal: 20,
-    paddingBottom: 40,
   },
   button: {
     justifyContent: 'flex-start',
