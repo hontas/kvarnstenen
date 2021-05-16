@@ -9,6 +9,7 @@ import {
   Platform,
   Text,
   TextInput,
+  View,
 } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
@@ -25,6 +26,7 @@ import { setCurrentChapter } from '../../store/reducers/game';
 import COLORS from '../../constants/colors';
 import { ScreenProps } from '../../constants/types';
 import { getChapterRouteName } from '../../constants/routes';
+import * as TYPOGRAPHY from '../../constants/typography';
 import { Menu } from './Menu';
 
 export function ChapterScreen({ navigation, route }: ScreenProps) {
@@ -100,12 +102,14 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       <MenuButton onPress={() => setShowMenu(true)} style={styles.menuButton} />
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          {previousChapterPath && (
+          {/* {previousChapterPath && (
             <Button.Tertiary onPress={goToPreviousScreen} style={styles.backButton}>
               <Entypo name="back" size={24} color={COLORS.whiteTransparent} />
             </Button.Tertiary>
-          )}
-          <Heading>{chapter.name}</Heading>
+          )} */}
+          <Heading level={2} containerStyle={styles.heading}>
+            {chapter.name}
+          </Heading>
 
           <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">
             {chapter.geo_location && (
@@ -139,15 +143,25 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
             {chapter.choices.map(({ choice_type, choice_text, chapter_link }, index) => {
               if (choice_type === 'password') {
                 return (
-                  <TextInput
-                    key={chapter_link || index}
-                    style={styles.input}
-                    onChangeText={(password) => {
-                      if (password.toLowerCase() === choice_text.toLowerCase()) {
-                        goToNextScreen(chapter_link);
-                      }
-                    }}
-                  />
+                  <View key={chapter_link || index}>
+                    <TextInput
+                      style={styles.input}
+                      onChangeText={(password) => {
+                        if (password.toLowerCase() === choice_text.toLowerCase()) {
+                          goToNextScreen(chapter_link);
+                        }
+                      }}
+                    />
+                    <View style={styles.helperContainer}>
+                      <Text style={styles.smallText}>Om du inte hittar koden</Text>
+                      <Button.Tertiary
+                        onPress={() => goToNextScreen(chapter_link)}
+                        text="klicka här"
+                        style={styles.helpButton}
+                        textStyle={styles.smallText}
+                      ></Button.Tertiary>
+                    </View>
+                  </View>
                 );
               }
 
@@ -185,18 +199,23 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     left: 10,
+    marginTop: 4,
+  },
+  heading: {
+    marginTop: 0,
+    marginHorizontal: 40,
   },
   scrollView: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  backButton: {
-    width: 'auto',
-    position: 'absolute',
-    left: 10,
-    top: 0,
-  },
+  // backButton: {
+  //   width: 'auto',
+  //   position: 'absolute',
+  //   left: 10,
+  //   top: 0,
+  // },
   choiceHeadline: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -219,5 +238,20 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'flex-start',
     marginBottom: 10,
+  },
+  helperContainer: {
+    marginTop: 16,
+    flexDirection: 'row',
+  },
+  helpButton: {
+    padding: 0,
+    flex: 0,
+    width: 'auto',
+  },
+  smallText: {
+    color: COLORS.grayLighter,
+    fontSize: TYPOGRAPHY.fontSize.small,
+    lineHeight: TYPOGRAPHY.fontSize.small,
+    marginRight: TYPOGRAPHY.fontSize.small / 3,
   },
 });

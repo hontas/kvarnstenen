@@ -14,5 +14,7 @@ export default {
   green: 'green',
   blue: 'blue',
   gray: '#777',
+  grayLight: '#aaa',
+  grayLighter: '#ccc',
   grayDark: '#333',
 };
