@@ -22,7 +22,7 @@ const routes = [
     name: ROUTE_NAMES.HOW_TO_PLAY,
     component: HowToPlayScreen,
     options: {
-      headerShown: true,
+      headerShown: false,
     },
   },
   {
