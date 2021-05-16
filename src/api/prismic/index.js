@@ -58,16 +58,26 @@ function getUITexts(texts, { text_key, text_value }) {
   };
 }
 
-export const getChapters = async () => {
-  const response = await queryClient(queries.getAllChapters);
+const fetchChapters = async (after) => {
+  console.log('[fetchChapters] start');
+  const response = await queryClient(queries.getAllChapters(after));
 
   if (!response.allChapters) {
-    console.log('[getChapters] error', response);
+    console.log('[fetchChapters] error', response);
     throw new Error('Could not fetch chapters');
   }
 
-  // console.log('response.allChapters.edges', response.allChapters.edges);
-  return response.allChapters.edges.reduce(
+  const { totalCount, pageInfo, edges } = response.allChapters;
+
+  console.log(
+    `[fetchChapters] fetched ${edges.length} of ${totalCount}. Has more: ${pageInfo.hasNextPage}`
+  );
+
+  return response;
+};
+
+const transformChapters = (edges) => {
+  return edges.reduce(
     (chapters, chapter) => ({
       ...chapters,
       [chapter.node._meta.uid]: transformData(chapter.node, {
@@ -80,4 +90,25 @@ export const getChapters = async () => {
     }),
     {}
   );
+};
+
+export const getChapters = async () => {
+  console.log('[getChapters] start');
+  let hasMore = true;
+  let lastCursor;
+  let allEdges = [];
+
+  while (hasMore) {
+    const response = await fetchChapters(lastCursor);
+    const { pageInfo, edges } = response.allChapters;
+    const { hasNextPage, endCursor } = pageInfo;
+
+    allEdges = [...allEdges, ...edges];
+    hasMore = hasNextPage;
+    lastCursor = endCursor;
+  }
+
+  console.log(`[getChapters] got ${allEdges.length} chapters`);
+
+  return transformChapters(allEdges);
 };

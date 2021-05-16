@@ -34,40 +34,52 @@ export const getAllScreens = gql`
   }
 `;
 
-export const getAllChapters = gql`
-  query {
-    allChapters {
-      edges {
-        node {
-          name
-          audio {
-            ... on _FileLink {
-              url
-              size
-              name
+// prismic API has a max limit of 50
+const LIMIT = 20;
+
+export const getAllChapters = (after) => {
+  const queryArguments = after ? `after: "${after}", first: ${LIMIT}` : `first: ${LIMIT}`;
+
+  return gql`
+    query {
+      allChapters(${queryArguments}) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          node {
+            name
+            audio {
+              ... on _FileLink {
+                url
+                size
+                name
+              }
             }
-          }
-          geo_location
-          geo_location_title
-          geo_location_image
-          geo_location_description
-          choices_headline
-          choices {
-            choice_type
-            choice_text
-            chapter_link {
-              ... on Chapter {
-                _meta {
-                  uid
+            geo_location
+            geo_location_title
+            geo_location_image
+            geo_location_description
+            choices_headline
+            choices {
+              choice_type
+              choice_text
+              chapter_link {
+                ... on Chapter {
+                  _meta {
+                    uid
+                  }
                 }
               }
             }
-          }
-          _meta {
-            uid
+            _meta {
+              uid
+            }
           }
         }
       }
     }
-  }
-`;
+  `;
+};
