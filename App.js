@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
+import { StatusBar } from 'react-native';
 
 import configureStore from './src/store/configureStore';
 import { getScreensData } from './src/store/reducers/screens';
@@ -17,6 +18,7 @@ store.dispatch(getChapters());
 function App() {
   return (
     <Provider store={store}>
+      <StatusBar barStyle="dark-content" />
       <UserProvider>
         <NavigationContainer>
           <RootNavigator />
