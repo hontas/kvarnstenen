@@ -21,7 +21,7 @@ export function GameLoadingScreen({ navigation }: Props) {
   // TODO: preload music, voice and other media?
 
   const firstChapter = useMemo(() => {
-    return chapters && Object.keys(chapters).find((chapter) => chapter.startsWith('1'));
+    return chapters && Object.keys(chapters).find((chapter) => chapter.startsWith('1-'));
   }, [chapters]);
 
   const goToFirstChapter = useCallback(() => {
