@@ -1,7 +1,7 @@
 export const fontWeight = {
   bold: '700',
   extraBold: '900',
-} as const
+} as const;
 
 export const fontSize = {
   xsmall: 12,
@@ -9,4 +9,6 @@ export const fontSize = {
   medium: 16,
   large: 20,
   heading1: 48,
-} as const
+  heading2: 40,
+  heading3: 32,
+} as const;
