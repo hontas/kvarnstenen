@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import useT from '../utils/useT';
-import { screenPropTypes } from '../constants/propTypes';
 import { selectScreen, selectScreensLoading, selectScreensError } from '../store/reducers/screens';
 import { selectSlotsList, createNewGame } from '../store/reducers/game';
 import * as Button from '../components/Button';
@@ -59,10 +58,6 @@ export function HomeScreen({ navigation }: Props) {
     </SafeAreaView>
   );
 }
-
-HomeScreen.propTypes = {
-  navigation: screenPropTypes.navigation,
-};
 
 const styles = StyleSheet.create({
   container: {
