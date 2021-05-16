@@ -23,6 +23,7 @@ import { selectChapters } from '../store/reducers/chapters';
 import { setCurrentChapter } from '../store/reducers/game';
 import COLORS from '../constants/colors';
 import { ScreenProps } from '../constants/types';
+import { ROUTE_NAMES, getChapterRouteName } from '../constants/routes';
 
 export function ChapterScreen({ navigation, route }: ScreenProps) {
   useKeepAwake();
@@ -83,8 +84,9 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       console.log('unloaded');
     }
 
-    dispatch(setCurrentChapter(`chapter/${chapter_link}`, chapters[chapter_link].name));
-    navigation.navigate(`chapter/${chapter_link}`, { from: `chapter/${chapter.path}` });
+    const chapterRouteName = getChapterRouteName(chapter_link);
+    dispatch(setCurrentChapter(chapterRouteName, chapters[chapter_link].name));
+    navigation.navigate(chapterRouteName, { from: getChapterRouteName(chapter.path) });
   };
 
   return (
