@@ -84,8 +84,8 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
   return (
     <SafeAreaView style={styles.container}>
       <BackButton onPress={goBack} style={styles.backButton} />
+      <Heading level={2}>{screen.title}</Heading>
       <ScrollView>
-        <Heading level={2}>{screen.title}</Heading>
         <Transitioning.View
           style={styles.transitionContainer}
           transition={transition}
@@ -93,16 +93,18 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
         >
           {slots.map(({ id, chapterPath, title, subTitle }) => {
             return (
-              <View key={id} style={styles.buttonContainer}>
+              <View key={id} style={styles.buttonWrapper}>
                 <Button.Primary
                   text={title}
                   style={styles.button}
+                  containerStyle={styles.buttonContainer}
                   onPress={() => navigateToChapter({ chapterPath, slotId: id })}
                 >
                   <Text style={styles.buttonSubText}>{subTitle}</Text>
                 </Button.Primary>
                 <Button.Secondary
-                  style={[styles.button, styles.buttonRemove]}
+                  style={styles.buttonRemove}
+                  containerStyle={styles.buttonRemoveContainer}
                   onPress={() => onRemoveSlot(id)}
                 >
                   <Entypo name="trash" size={24} color={'black'} />
@@ -116,11 +118,14 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
   );
 }
 
+const MARGIN = 20;
+const HEIGHT = 60;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 50,
-    marginHorizontal: 20,
+    marginHorizontal: MARGIN,
   },
   backButton: {
     marginLeft: -10,
@@ -130,19 +135,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  buttonContainer: {
-    width: '100%',
+  buttonWrapper: {
     flexDirection: 'row',
+    alignItems: 'stretch',
+  },
+  buttonContainer: {
+    flex: 1,
   },
   button: {
-    flex: 1,
-    height: 60,
-    marginTop: 30,
+    flexDirection: 'column',
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    height: HEIGHT,
+    marginTop: MARGIN,
     alignItems: 'flex-start',
   },
-  buttonRemove: {
-    flexBasis: 45,
+  buttonRemoveContainer: {
     flexGrow: 0,
+    flexBasis: 45,
+  },
+  buttonRemove: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    height: HEIGHT,
+    marginTop: MARGIN,
   },
   buttonSubText: {
     color: COLORS.button.text_primary,

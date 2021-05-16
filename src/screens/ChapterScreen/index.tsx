@@ -14,20 +14,23 @@ import { Entypo } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useKeepAwake } from 'expo-keep-awake';
 
-import { LoadingBoundary } from '../components/LoadingBoundary';
-import { Heading } from '../components/Heading';
-import * as Button from '../components/Button';
-import { Map } from '../components/Map';
-import { AudioPlayer } from '../components/AudioPlayer';
-import { selectChapters } from '../store/reducers/chapters';
-import { setCurrentChapter } from '../store/reducers/game';
-import COLORS from '../constants/colors';
-import { ScreenProps } from '../constants/types';
-import { ROUTE_NAMES, getChapterRouteName } from '../constants/routes';
+import { LoadingBoundary } from '../../components/LoadingBoundary';
+import { Heading } from '../../components/Heading';
+import * as Button from '../../components/Button';
+import { Map } from '../../components/Map';
+import { AudioPlayer } from '../../components/AudioPlayer';
+import { MenuButton } from '../../components/MenuButton';
+import { selectChapters } from '../../store/reducers/chapters';
+import { setCurrentChapter } from '../../store/reducers/game';
+import COLORS from '../../constants/colors';
+import { ScreenProps } from '../../constants/types';
+import { getChapterRouteName } from '../../constants/routes';
+import { Menu } from './Menu';
 
 export function ChapterScreen({ navigation, route }: ScreenProps) {
   useKeepAwake();
   const dispatch = useDispatch();
+  const [showMenu, setShowMenu] = React.useState(false);
   const routeName = route.name.split('/')[1];
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
@@ -94,6 +97,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       style={styles.outerContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <MenuButton onPress={() => setShowMenu(true)} style={styles.menuButton} />
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           {previousChapterPath && (
@@ -165,6 +169,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
           <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />
         )}
       </SafeAreaView>
+      <Menu visible={showMenu} navigation={navigation} onDismiss={() => setShowMenu(false)} />
     </KeyboardAvoidingView>
   );
 }
@@ -177,6 +182,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  menuButton: {
+    left: 10,
   },
   scrollView: {
     flex: 1,

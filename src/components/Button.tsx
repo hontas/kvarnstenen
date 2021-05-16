@@ -5,24 +5,29 @@ import COLORS from '../constants/colors';
 import * as TYPOGRAPHY from '../constants/typography';
 
 interface Props {
-  children?: JSX.Element;
+  children?: JSX.Element | JSX.Element[];
   disabled?: boolean;
   onPress: () => void;
+  containerStyle?: ViewStyle | ViewStyle[];
   style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle | TextStyle[];
   text?: string;
   accessibilityLabel?: string;
 }
 
-function Button({ onPress, text, style, textStyle, children, disabled, ...rest }: Props) {
+function Button({
+  onPress,
+  text,
+  style,
+  containerStyle,
+  textStyle,
+  children,
+  disabled,
+  ...rest
+}: Props) {
   return (
-    <TouchableOpacity
-      {...rest}
-      disabled={disabled}
-      style={[styles.container, style]}
-      onPress={onPress}
-    >
-      <View>
+    <TouchableOpacity {...rest} disabled={disabled} onPress={onPress} style={containerStyle}>
+      <View style={[styles.container, style]}>
         {text && <Text style={[styles.text, textStyle]}>{text}</Text>}
         {children}
       </View>
@@ -59,10 +64,11 @@ export function Tertiary({ style = {}, textStyle = {}, ...props }: Props) {
   return <Button style={style} textStyle={[styles.tertiaryText, textStyle]} {...props} />;
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     borderRadius: 5,
+    flexDirection: 'row',
     justifyContent: 'center',
     padding: 10,
     width: '100%',
@@ -88,5 +94,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: TYPOGRAPHY.fontSize.large,
+    fontWeight: '500',
   },
 });
