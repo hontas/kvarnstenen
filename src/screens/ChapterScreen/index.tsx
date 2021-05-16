@@ -140,43 +140,47 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
             ]}
           >
             <Text style={styles.choiceHeadline}>{chapter.choices_headline}</Text>
-            {chapter.choices.map(({ choice_type, choice_text, chapter_link }, index) => {
-              if (choice_type === 'password') {
-                return (
-                  <View key={chapter_link || index}>
-                    <TextInput
-                      style={styles.input}
-                      onChangeText={(password) => {
-                        if (password.toLowerCase() === choice_text.toLowerCase()) {
-                          goToNextScreen(chapter_link);
-                        }
-                      }}
-                    />
-                    <View style={styles.helperContainer}>
-                      <Text style={styles.smallText}>Om du inte hittar koden</Text>
-                      <Button.Tertiary
-                        onPress={() => goToNextScreen(chapter_link)}
-                        text="klicka här"
-                        style={styles.helpButton}
-                        textStyle={styles.smallText}
-                      ></Button.Tertiary>
+            {chapter.choices.map(
+              ({ choice_type, choice_text, hide_help_text, chapter_link }, index) => {
+                if (choice_type === 'password') {
+                  return (
+                    <View key={chapter_link || index}>
+                      <TextInput
+                        style={styles.input}
+                        onChangeText={(password) => {
+                          if (password.toLowerCase() === choice_text.toLowerCase()) {
+                            goToNextScreen(chapter_link);
+                          }
+                        }}
+                      />
+                      {!hide_help_text && (
+                        <View style={styles.helperContainer}>
+                          <Text style={styles.smallText}>Om du inte hittar koden</Text>
+                          <Button.Tertiary
+                            onPress={() => goToNextScreen(chapter_link)}
+                            text="klicka här"
+                            style={styles.helpButton}
+                            textStyle={styles.smallText}
+                          ></Button.Tertiary>
+                        </View>
+                      )}
                     </View>
-                  </View>
+                  );
+                }
+
+                if (!chapter_link) return;
+
+                return (
+                  <Button.Primary
+                    disabled={false}
+                    key={chapter_link || index}
+                    text={choice_text}
+                    style={styles.button}
+                    onPress={() => goToNextScreen(chapter_link)}
+                  />
                 );
               }
-
-              if (!chapter_link) return;
-
-              return (
-                <Button.Primary
-                  disabled={false}
-                  key={chapter_link || index}
-                  text={choice_text}
-                  style={styles.button}
-                  onPress={() => goToNextScreen(chapter_link)}
-                />
-              );
-            })}
+            )}
           </Animated.View>
         </ScrollView>
         {chapter.audio && (

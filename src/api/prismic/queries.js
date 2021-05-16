@@ -66,6 +66,7 @@ export const getAllChapters = (after) => {
             choices {
               choice_type
               choice_text
+              hide_help_text
               chapter_link {
                 ... on Chapter {
                   _meta {
