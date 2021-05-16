@@ -15,6 +15,7 @@ Paragraph.propTypes = {
 const styles = StyleSheet.create({
   paragraph: {
     fontSize: TYPOGRAPHY.fontSize.large,
+    lineHeight: TYPOGRAPHY.fontSize.large * 1.4,
     marginVertical: TYPOGRAPHY.fontSize.large,
   },
 });
