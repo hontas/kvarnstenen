@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Animated,
+  Dimensions,
+  Image,
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
@@ -11,7 +13,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useKeepAwake } from 'expo-keep-awake';
 
@@ -29,6 +30,15 @@ import { getChapterRouteName } from '../../constants/routes';
 import * as TYPOGRAPHY from '../../constants/typography';
 import { Menu } from './Menu';
 
+const SCREEN = Dimensions.get('screen');
+
+const getAspectRatio = (dimensions) => {
+  if (!dimensions) return 1;
+
+  const { width, height } = dimensions;
+  return width / height;
+};
+
 export function ChapterScreen({ navigation, route }: ScreenProps) {
   useKeepAwake();
   const dispatch = useDispatch();
@@ -42,6 +52,8 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
     width: chapter.geo_location_image.dimensions.width,
     height: chapter.geo_location_image.dimensions.height,
   };
+
+  const imageAspectRatio = getAspectRatio(chapter.image?.dimensions);
 
   const [sound, setSound] = React.useState<Audio.Sound>();
   const isLoading = chapter.audio && !sound;
@@ -65,7 +77,6 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
   }, [chapter, fadeAnim, onComplete]);
 
   const goToNextScreen = async (chapter_link) => {
-    console.log('goToNextScreen');
     if (sound) {
       console.log('unloading sound from ChapterScreen');
       await sound.unloadAsync();
@@ -90,14 +101,27 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
           </Heading>
 
           <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">
-            {chapter.geo_location && (
-              <Map
-                latLng={chapter.geo_location}
-                markerTitle={chapter.geo_location_title}
-                markerDescription={chapter.geo_location_description}
-                markerImage={markerImage}
-              />
-            )}
+            <>
+              {chapter.image && (
+                <View style={styles.image}>
+                  <Image
+                    source={{ uri: chapter.image.url }}
+                    style={{
+                      width: SCREEN.width,
+                      height: SCREEN.width / imageAspectRatio,
+                    }}
+                  />
+                </View>
+              )}
+              {chapter.geo_location && !chapter.image && (
+                <Map
+                  latLng={chapter.geo_location}
+                  markerTitle={chapter.geo_location_title}
+                  markerDescription={chapter.geo_location_description}
+                  markerImage={markerImage}
+                />
+              )}
+            </>
           </LoadingBoundary>
 
           <Animated.View
@@ -191,6 +215,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
   },
   choiceHeadline: {
     fontSize: 20,
