@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { Animated, Easing, View, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
+import { Video } from 'expo-av';
 
 import useT from '../utils/useT';
 import { selectScreen, selectScreensLoading, selectScreensError } from '../store/reducers/screens';
@@ -11,6 +12,8 @@ import { LoadingScreen } from './LoadingScreen';
 import { ROUTE_NAMES } from '../constants/routes';
 import { ScreenProps } from '../constants/types';
 
+const SCREEN = Dimensions.get('screen');
+const defaultAspectRatio = 16 / 9;
 type Props = ScreenProps;
 
 export function HomeScreen({ navigation }: Props) {
@@ -21,9 +24,40 @@ export function HomeScreen({ navigation }: Props) {
   const slotsArray = useSelector(selectSlotsList);
   const hasSavedGames = slotsArray.length > 0;
   const t = useT(screen?.ui_texts);
+  const video = React.useRef<Video>(null);
+  const [videoSize, setVideoSize] = React.useState({
+    width: SCREEN.width,
+    height: SCREEN.width / defaultAspectRatio,
+  });
+  const hasVideo = Boolean(
+    ['mov', 'mp4', 'm4v', '3gp'].includes(screen?.media?.url.split('.').pop())
+  );
+
+  const opacity = React.useRef(new Animated.Value(0)).current;
+  const fadeIn = Animated.timing(opacity, {
+    toValue: 1,
+    useNativeDriver: true,
+    duration: 5000,
+    easing: Easing.linear,
+  });
+
+  const onReadyForDisplay = React.useCallback(({ naturalSize }) => {
+    const { height, width } = naturalSize;
+    const aspectRatio = width / height;
+    setVideoSize((previous) => ({
+      ...previous,
+      height: SCREEN.width / aspectRatio,
+    }));
+  }, []);
+
+  const onLoad = React.useCallback(() => {
+    if (video.current) {
+      video.current.playAsync();
+      fadeIn.start();
+    }
+  }, [video, fadeIn]);
 
   const newGame = useCallback(async () => {
-    // reset gameplay
     await dispatch(createNewGame());
     navigation.navigate(ROUTE_NAMES.GAME_LOADING);
   }, [navigation, dispatch]);
@@ -40,6 +74,19 @@ export function HomeScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Heading>{screen.title}</Heading>
+      <Animated.View style={[styles.videoContainer, { opacity }]}>
+        {hasVideo && (
+          <Video
+            ref={video}
+            style={videoSize}
+            source={{ uri: screen.media.url }}
+            resizeMode="contain"
+            isLooping
+            onReadyForDisplay={onReadyForDisplay}
+            onLoad={onLoad}
+          />
+        )}
+      </Animated.View>
       <View style={styles.actionButtons}>
         <Button.Primary text={t('new_game')} style={styles.button} onPress={newGame} />
         {hasSavedGames && (
@@ -65,6 +112,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 50,
     marginHorizontal: 20,
+  },
+  videoContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   actionButtons: {
     flex: 1,
