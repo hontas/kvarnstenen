@@ -19,6 +19,13 @@ export const getAllScreens = gql`
         node {
           name
           title
+          media {
+            ... on _FileLink {
+              name
+              url
+              size
+            }
+          }
           background_color
           text_color
           ui_texts {
@@ -58,6 +65,7 @@ export const getAllChapters = (after) => {
                 name
               }
             }
+            image
             geo_location
             geo_location_title
             geo_location_image
