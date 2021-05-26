@@ -37,9 +37,6 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
 
-  const previousChapterPath = route.params?.from;
-  const previousChapter = previousChapterPath && chapters[previousChapterPath.split('/')[1]];
-
   const markerImage = chapter.geo_location_image && {
     uri: chapter.geo_location_image.url,
     width: chapter.geo_location_image.dimensions.width,
@@ -67,20 +64,6 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
     };
   }, [chapter, fadeAnim, onComplete]);
 
-  const goToPreviousScreen = async () => {
-    console.log('goToPreviousScreen');
-    if (!previousChapterPath) return;
-
-    if (sound) {
-      console.log('unloading sound from ChapterScreen');
-      await sound.unloadAsync();
-      console.log('unloaded');
-    }
-
-    dispatch(setCurrentChapter(previousChapterPath, previousChapter.name));
-    navigation.goBack();
-  };
-
   const goToNextScreen = async (chapter_link) => {
     console.log('goToNextScreen');
     if (sound) {
@@ -102,11 +85,6 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       <MenuButton onPress={() => setShowMenu(true)} style={styles.menuButton} />
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          {/* {previousChapterPath && (
-            <Button.Tertiary onPress={goToPreviousScreen} style={styles.backButton}>
-              <Entypo name="back" size={24} color={COLORS.whiteTransparent} />
-            </Button.Tertiary>
-          )} */}
           <Heading level={2} containerStyle={styles.heading}>
             {chapter.name}
           </Heading>
@@ -144,7 +122,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
               ({ choice_type, choice_text, hide_help_text, chapter_link }, index) => {
                 if (choice_type === 'password') {
                   return (
-                    <View key={chapter_link || index}>
+                    <View style={styles.passwordContainer} key={chapter_link || index}>
                       <TextInput
                         style={styles.input}
                         onChangeText={(password) => {
@@ -214,12 +192,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  // backButton: {
-  //   width: 'auto',
-  //   position: 'absolute',
-  //   left: 10,
-  //   top: 0,
-  // },
   choiceHeadline: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -241,6 +213,9 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  passwordContainer: {
     marginBottom: 10,
   },
   helperContainer: {
