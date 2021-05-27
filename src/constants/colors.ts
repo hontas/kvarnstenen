@@ -8,6 +8,7 @@ export default {
   },
   white: 'whitesmoke',
   whiteTransparent: 'rgba(245,245,245,0.5)',
+  whiteTranslucent: 'rgba(245,245,245,0.15)',
   black: 'black',
   blackTransparent: 'rgba(0,0,0,0.75)',
   red: 'red',

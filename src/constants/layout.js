@@ -1,4 +1,5 @@
 const formElementHeight = 45;
+export const horizontalMargin = 20;
 
 export default {
   input: {

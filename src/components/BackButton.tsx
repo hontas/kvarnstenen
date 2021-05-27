@@ -25,7 +25,7 @@ export const BackButton = ({ onPress, style }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.whiteTransparent,
+    backgroundColor: COLORS.whiteTranslucent,
     borderRadius: 30,
     position: 'absolute',
     left: 0,

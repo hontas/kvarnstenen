@@ -12,8 +12,10 @@ function queryClient(query) {
     });
 }
 
-export const fetchScreensData = () => {
-  return queryClient(queries.getAllBaseScreens);
+export const fetchConfigData = async () => {
+  const response = await queryClient(queries.getConfig);
+
+  return response.allApp_configs.edges[0].node || {};
 };
 
 export const getScreens = async () => {

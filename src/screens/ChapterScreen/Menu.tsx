@@ -6,11 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import useT from '../../utils/useT';
 import { selectScreen } from '../../store/reducers/screens';
+import { selectConfig } from '../../store/reducers/config';
 import * as Button from '../../components/Button';
 import { ScreenProps } from '../../constants/types';
+import * as LAYOUT from '../../constants/layout';
 import COLORS from '../../constants/colors';
 import { ROUTE_NAMES } from '../../constants/routes';
-import { Heading } from '../../components/Heading';
+import { Background } from '../../components/Background';
 
 interface Props extends Pick<ScreenProps, 'navigation'> {
   onDismiss: () => void;
@@ -20,39 +22,47 @@ interface Props extends Pick<ScreenProps, 'navigation'> {
 export const Menu = ({ navigation, onDismiss, visible }: Props) => {
   const insets = useSafeAreaInsets();
   const screen = useSelector(selectScreen('chapter'));
+  const { text_color_primary } = useSelector(selectConfig);
   const t = useT(screen?.ui_texts);
 
   return (
-    <Modal visible={visible} animationType="fade" transparent={true}>
+    <Modal visible={visible} animationType="fade" transparent={true} onRequestClose={onDismiss}>
       <View style={styles.backDrop}>
-        <Pressable onPress={onDismiss} style={styles.backDropButton}>
-          <View style={styles.backDropButton} />
-        </Pressable>
-        <View style={[styles.container, { paddingBottom: insets.bottom + 30 }]}>
-          <Heading level={3}>{t('menu_title')}</Heading>
+        <Background flip style={[styles.container, { paddingBottom: insets.bottom + 30 }]}>
           <View>
-            <Button.Secondary
+            <View style={styles.header}>
+              <Pressable onPress={onDismiss} style={styles.closeButton}>
+                <Entypo name="cross" size={24} color={text_color_primary} />
+              </Pressable>
+            </View>
+            <Button.Primary
               onPress={() => {
                 navigation.navigate(ROUTE_NAMES.HOME);
                 onDismiss();
               }}
               style={styles.button}
-            >
-              <Entypo name="home" size={24} />
-              <Text style={[styles.buttonText, Button.styles.text, Button.styles.secondaryText]}>
-                {t('menu_go_home')}
-              </Text>
-            </Button.Secondary>
+              text={t('menu_go_home')}
+              Icon={() => (
+                <Entypo name="home" size={24} color={text_color_primary} style={styles.icon} />
+              )}
+            />
           </View>
           <View>
-            <Button.Secondary onPress={onDismiss} style={styles.button}>
-              <Entypo name="game-controller" size={24} />
-              <Text style={[styles.buttonText, Button.styles.text, Button.styles.secondaryText]}>
-                {t('menu_close')}
-              </Text>
-            </Button.Secondary>
+            <Button.Primary
+              onPress={onDismiss}
+              style={styles.button}
+              text={t('menu_close')}
+              Icon={() => (
+                <Entypo
+                  name="game-controller"
+                  size={24}
+                  color={text_color_primary}
+                  style={styles.icon}
+                />
+              )}
+            />
           </View>
-        </View>
+        </Background>
       </View>
     </Modal>
   );
@@ -64,21 +74,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  backDropButton: {
-    flex: 1,
-  },
   container: {
-    backgroundColor: COLORS.white,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    paddingHorizontal: 20,
+    flex: 0,
+    paddingHorizontal: LAYOUT.horizontalMargin,
+  },
+  header: {
+    alignItems: 'flex-end',
+    paddingVertical: 10,
+    marginHorizontal: -10,
+  },
+  closeButton: {
+    padding: 10,
   },
   button: {
     justifyContent: 'flex-start',
-    backgroundColor: COLORS.white,
-    marginBottom: 5,
+    marginBottom: LAYOUT.horizontalMargin,
   },
-  buttonText: {
-    marginLeft: 10,
+  icon: {
+    marginRight: 10,
   },
 });

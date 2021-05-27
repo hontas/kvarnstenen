@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, StyleSheet, SafeAreaView, View, ScrollView } from 'react-native';
+import { Text, StyleSheet, View, ScrollView } from 'react-native';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { Entypo } from '@expo/vector-icons';
 
 import * as Button from '../components/Button';
+import { Layout } from '../components/Layout';
 import {
   selectSlotsList,
   setCurrentSlot,
@@ -15,8 +16,8 @@ import { selectScreen } from '../store/reducers/screens';
 import COLORS from '../constants/colors';
 import { ROUTE_NAMES } from '../constants/routes';
 import { ScreenProps } from '../constants/types';
+import * as LAYOUT from '../constants/layout';
 import { Heading } from '../components/Heading';
-import { BackButton } from '../components/BackButton';
 
 const transitionDuration = 350;
 const transition = (
@@ -77,15 +78,12 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
     [dispatch]
   );
 
-  const goBack = React.useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
-
   return (
-    <SafeAreaView style={styles.container}>
-      <BackButton onPress={goBack} style={styles.backButton} />
-      <Heading level={2}>{screen.title}</Heading>
-      <ScrollView>
+    <Layout contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <Heading level={2} containerStyle={styles.heading}>
+          {screen.title}
+        </Heading>
         <Transitioning.View
           style={styles.transitionContainer}
           transition={transition}
@@ -107,14 +105,14 @@ export function ContinueGameScreen({ navigation }: ScreenProps) {
                   containerStyle={styles.buttonRemoveContainer}
                   onPress={() => onRemoveSlot(id)}
                 >
-                  <Entypo name="trash" size={24} color={'black'} />
+                  <Entypo name="trash" size={24} color={COLORS.whiteTransparent} />
                 </Button.Secondary>
               </View>
             );
           })}
         </Transitioning.View>
       </ScrollView>
-    </SafeAreaView>
+    </Layout>
   );
 }
 
@@ -123,12 +121,14 @@ const HEIGHT = 60;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginBottom: 50,
-    marginHorizontal: MARGIN,
+    marginHorizontal: 0,
   },
-  backButton: {
-    marginLeft: -10,
+  scrollView: {
+    paddingHorizontal: LAYOUT.horizontalMargin,
+    paddingBottom: 50,
+  },
+  heading: {
+    marginTop: LAYOUT.horizontalMargin,
   },
   transitionContainer: {
     flex: 1,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     marginTop: MARGIN,
   },
   buttonSubText: {
-    color: COLORS.button.text_primary,
+    color: COLORS.whiteTransparent,
     alignSelf: 'flex-start',
   },
 });

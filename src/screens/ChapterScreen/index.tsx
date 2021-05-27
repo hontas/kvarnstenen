@@ -7,15 +7,14 @@ import {
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
-  SafeAreaView,
   Platform,
-  Text,
   TextInput,
   View,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { useKeepAwake } from 'expo-keep-awake';
 
+import useT from '../../utils/useT';
 import { LoadingBoundary } from '../../components/LoadingBoundary';
 import { Heading } from '../../components/Heading';
 import * as Button from '../../components/Button';
@@ -24,10 +23,14 @@ import { AudioPlayer } from '../../components/AudioPlayer';
 import { MenuButton } from '../../components/MenuButton';
 import { selectChapters } from '../../store/reducers/chapters';
 import { setCurrentChapter } from '../../store/reducers/game';
+import { selectConfig } from '../../store/reducers/config';
+import { selectScreen } from '../../store/reducers/screens';
 import COLORS from '../../constants/colors';
 import { ScreenProps } from '../../constants/types';
 import { getChapterRouteName } from '../../constants/routes';
 import * as TYPOGRAPHY from '../../constants/typography';
+import { Layout } from '../../components/Layout';
+import * as Text from '../../components/Text';
 import { Menu } from './Menu';
 
 const SCREEN = Dimensions.get('screen');
@@ -44,8 +47,11 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = React.useState(false);
   const routeName = route.name.split('/')[1];
+  const screen = useSelector(selectScreen('chapter'));
   const chapters = useSelector(selectChapters);
   const chapter = chapters[routeName];
+  const { text_color_primary, text_color_dim } = useSelector(selectConfig);
+  const t = useT(screen?.ui_texts);
 
   const markerImage = chapter.geo_location_image && {
     uri: chapter.geo_location_image.url,
@@ -94,7 +100,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <MenuButton onPress={() => setShowMenu(true)} style={styles.menuButton} />
-      <SafeAreaView style={styles.container}>
+      <Layout contentContainerStyle={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Heading level={2} containerStyle={styles.heading}>
             {chapter.name}
@@ -141,7 +147,9 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
               },
             ]}
           >
-            <Text style={styles.choiceHeadline}>{chapter.choices_headline}</Text>
+            <Text.Regular style={[styles.choiceHeadline, { color: text_color_primary }]}>
+              {chapter.choices_headline}
+            </Text.Regular>
             {chapter.choices.map(
               ({ choice_type, choice_text, hide_help_text, chapter_link }, index) => {
                 if (choice_type === 'password') {
@@ -157,12 +165,11 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
                       />
                       {!hide_help_text && (
                         <View style={styles.helperContainer}>
-                          <Text style={styles.smallText}>Om du inte hittar koden</Text>
                           <Button.Tertiary
                             onPress={() => goToNextScreen(chapter_link)}
-                            text="klicka här"
+                            text={t('skip_password_help_text')}
                             style={styles.helpButton}
-                            textStyle={styles.smallText}
+                            textStyle={[styles.smallText, { color: text_color_dim }]}
                           ></Button.Tertiary>
                         </View>
                       )}
@@ -188,7 +195,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
         {chapter.audio && (
           <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />
         )}
-      </SafeAreaView>
+      </Layout>
       <Menu visible={showMenu} navigation={navigation} onDismiss={() => setShowMenu(false)} />
     </KeyboardAvoidingView>
   );
@@ -199,9 +206,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginHorizontal: 0,
+    marginBottom: 0,
   },
   menuButton: {
     left: 10,
@@ -221,6 +229,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   choiceHeadline: {
+    color: COLORS.white,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
@@ -234,6 +243,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
+    backgroundColor: COLORS.whiteTranslucent,
     borderColor: COLORS.gray,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
@@ -256,7 +266,7 @@ const styles = StyleSheet.create({
     width: 'auto',
   },
   smallText: {
-    color: COLORS.grayLighter,
+    color: COLORS.white,
     fontSize: TYPOGRAPHY.fontSize.small,
     lineHeight: TYPOGRAPHY.fontSize.small,
     marginRight: TYPOGRAPHY.fontSize.small / 3,

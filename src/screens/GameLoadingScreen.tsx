@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 
 import useT from '../utils/useT';
 import { selectScreen } from '../store/reducers/screens';
 import { ScreenProps } from '../constants/types';
 import { ROUTE_NAMES, getChapterRouteName } from '../constants/routes';
 import { getChapters, selectChaptersLoading, selectChapters } from '../store/reducers/chapters';
+import { Layout } from '../components/Layout';
+import * as Text from '../components/Text';
 
 type Props = ScreenProps;
 
@@ -30,7 +32,6 @@ export function GameLoadingScreen({ navigation }: Props) {
 
   useEffect(() => {
     if (firstChapter && !chaptersLoading) {
-      console.log('goToFirstChapter', getChapterRouteName(firstChapter));
       setTimeout(() => goToFirstChapter(), 1000);
     }
   }, [firstChapter, chaptersLoading, goToFirstChapter]);
@@ -42,10 +43,10 @@ export function GameLoadingScreen({ navigation }: Props) {
   }, [firstChapter, chaptersLoading, dispatch]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Layout contentContainerStyle={styles.container}>
       <ActivityIndicator size="large" />
-      <Text>{t('loading_text')}</Text>
-    </SafeAreaView>
+      <Text.Regular>{t('loading_text')}</Text.Regular>
+    </Layout>
   );
 }
 
@@ -53,7 +54,5 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    marginHorizontal: 20,
   },
 });

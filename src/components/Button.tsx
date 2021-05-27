@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ViewStyle, TextStyle } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ViewStyle, TextStyle } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { selectConfig } from '../store/reducers/config';
 import COLORS from '../constants/colors';
 import * as TYPOGRAPHY from '../constants/typography';
+import * as Text from './Text';
 
 interface Props {
   children?: JSX.Element | JSX.Element[];
@@ -12,6 +15,7 @@ interface Props {
   style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle | TextStyle[];
   text?: string;
+  Icon?: () => JSX.Element;
   accessibilityLabel?: string;
 }
 
@@ -19,8 +23,9 @@ function Button({
   onPress,
   text,
   style,
+  Icon,
   containerStyle,
-  textStyle,
+  textStyle = {},
   children,
   disabled,
   ...rest
@@ -28,7 +33,8 @@ function Button({
   return (
     <TouchableOpacity {...rest} disabled={disabled} onPress={onPress} style={containerStyle}>
       <View style={[styles.container, style]}>
-        {text && <Text style={[styles.text, textStyle]}>{text}</Text>}
+        {Icon && <Icon />}
+        {text && <Text.Regular style={[styles.text, textStyle]}>{text}</Text.Regular>}
         {children}
       </View>
     </TouchableOpacity>
@@ -37,12 +43,18 @@ function Button({
 
 export function Primary({ style = {}, textStyle = {}, disabled, ...props }: Props) {
   const disabledStyles = disabled ? styles.primaryContainerDisabled : {};
+  const {
+    button_background_primary: backgroundColor,
+    text_color_primary,
+    button_text_color_primary,
+  } = useSelector(selectConfig);
+  const color = button_text_color_primary || text_color_primary;
 
   return (
     <Button
       disabled={disabled}
-      style={[styles.primaryContainer, disabledStyles, style]}
-      textStyle={[styles.primaryText, textStyle]}
+      style={[styles.primaryContainer, disabledStyles, { backgroundColor }, style]}
+      textStyle={[styles.primaryText, { color }, textStyle]}
       {...props}
     />
   );
@@ -50,18 +62,32 @@ export function Primary({ style = {}, textStyle = {}, disabled, ...props }: Prop
 
 export function Secondary({ style = {}, textStyle = {}, disabled, ...props }: Props) {
   const disabledStyles = disabled ? styles.secondaryContainerDisabled : {};
+  const {
+    button_background_primary,
+    button_background_secondary,
+    text_color_primary,
+    button_text_color_primary,
+    button_text_color_secondary,
+  } = useSelector(selectConfig);
+  const backgroundColor = button_background_secondary || button_background_primary;
+  const color = button_text_color_secondary || button_text_color_primary || text_color_primary;
 
   return (
     <Button
-      style={[styles.secondaryContainer, disabledStyles, style]}
-      textStyle={[styles.secondaryText, textStyle]}
+      style={[styles.secondaryContainer, disabledStyles, { backgroundColor }, style]}
+      textStyle={[styles.secondaryText, { color }, textStyle]}
       {...props}
     />
   );
 }
 
 export function Tertiary({ style = {}, textStyle = {}, ...props }: Props) {
-  return <Button style={style} textStyle={[styles.tertiaryText, textStyle]} {...props} />;
+  const { text_color_primary } = useSelector(selectConfig);
+  const color = text_color_primary;
+
+  return (
+    <Button style={style} textStyle={[styles.tertiaryText, { color }, textStyle]} {...props} />
+  );
 }
 
 export const styles = StyleSheet.create({

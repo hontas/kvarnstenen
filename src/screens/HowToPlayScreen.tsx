@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { ScrollView, View, StyleSheet, SafeAreaView } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
 
 import useT from '../utils/useT';
 import { selectScreen } from '../store/reducers/screens';
 import * as Button from '../components/Button';
-import { BackButton } from '../components/BackButton';
+import { Layout } from '../components/Layout';
 import { Paragraph } from '../components/Paragraph';
 import { Heading } from '../components/Heading';
 import { ScreenProps } from '../constants/types';
+import * as LAYOUT from '../constants/layout';
 
 export function HowToPlayScreen({ navigation }: ScreenProps) {
   const screen = useSelector(selectScreen('how-to-play'));
@@ -19,29 +20,30 @@ export function HowToPlayScreen({ navigation }: ScreenProps) {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <BackButton onPress={goBack} style={styles.backButton} />
+    <Layout contentContainerStyle={styles.container}>
       <ScrollView>
         <View style={styles.inner}>
-          <Heading level={2}>{screen.title}</Heading>
+          <Heading level={2} containerStyle={styles.header}>
+            {screen.title}
+          </Heading>
           <Paragraph>{t('paragraph')}</Paragraph>
           <Button.Primary text={t('go_back_button')} style={styles.button} onPress={goBack} />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Layout>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  backButton: {
-    left: 10,
+    marginHorizontal: 0,
   },
   inner: {
-    marginHorizontal: 20,
-    marginBottom: 100,
+    marginBottom: 50,
+    marginHorizontal: LAYOUT.horizontalMargin,
+  },
+  header: {
+    marginTop: LAYOUT.horizontalMargin,
   },
   button: {
     marginTop: 30,

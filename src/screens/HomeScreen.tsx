@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Animated, Easing, View, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
+import { Animated, Easing, View, StyleSheet, Dimensions } from 'react-native';
 import { Video } from 'expo-av';
 
 import useT from '../utils/useT';
@@ -8,9 +8,11 @@ import { selectScreen, selectScreensLoading, selectScreensError } from '../store
 import { selectSlotsList, createNewGame } from '../store/reducers/game';
 import * as Button from '../components/Button';
 import { Heading } from '../components/Heading';
+import { Layout } from '../components/Layout';
 import { LoadingScreen } from './LoadingScreen';
 import { ROUTE_NAMES } from '../constants/routes';
 import { ScreenProps } from '../constants/types';
+import * as LAYOUT from '../constants/layout';
 
 const SCREEN = Dimensions.get('screen');
 const defaultAspectRatio = 16 / 9;
@@ -72,7 +74,7 @@ export function HomeScreen({ navigation }: Props) {
   if (isLoading) return <LoadingScreen />;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Layout>
       <Heading>{screen.title}</Heading>
       <Animated.View style={[styles.videoContainer, { opacity }]}>
         {hasVideo && (
@@ -102,20 +104,15 @@ export function HomeScreen({ navigation }: Props) {
           onPress={() => navigation.navigate(ROUTE_NAMES.HOW_TO_PLAY)}
         />
       </View>
-    </SafeAreaView>
+    </Layout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 50,
-    marginHorizontal: 20,
-  },
   videoContainer: {
     flex: 1,
     justifyContent: 'center',
+    marginHorizontal: -LAYOUT.horizontalMargin,
   },
   actionButtons: {
     flex: 1,
@@ -123,6 +120,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    marginTop: 30,
+    marginTop: LAYOUT.horizontalMargin,
   },
 });

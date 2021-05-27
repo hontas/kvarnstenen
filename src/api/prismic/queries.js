@@ -1,13 +1,21 @@
 import gql from 'graphql-tag';
 
-export const getAllBaseScreens = gql`
+export const getConfig = gql`
   query {
-    homescreen(uid: "home", lang: "sv-se") {
-      title
-      cover_image
-      new_game_button_text
-      continue_game_button_text
-      how_to_play_button_text
+    allApp_configs {
+      edges {
+        node {
+          text_color_primary
+          background_color_primary
+          background_color_gradient_primary
+          text_color_dim
+          button_background_primary
+          button_text_color_primary
+          button_background_secondary
+          button_text_color_secondary
+          button_text_color_link
+        }
+      }
     }
   }
 `;

@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Text, StyleSheet, View, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle, TextStyle } from 'react-native';
 
 import * as TYPOGRAPHY from '../constants/typography';
+import * as Text from './Text';
 
 interface Props {
-  children: string | string[];
+  children: JSX.Element;
   style?: TextStyle;
   containerStyle?: ViewStyle;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
@@ -19,10 +20,18 @@ const fontSizes = {
   6: TYPOGRAPHY.fontSize.medium,
 };
 
-export function Heading({ children, style, containerStyle, level = 1 }: Props) {
+export function Heading({ children, style = {}, containerStyle, level = 1 }: Props) {
   return (
     <View style={[styles.container, { marginVertical: fontSizes[level] }, containerStyle]}>
-      <Text style={[styles.heading, { fontSize: fontSizes[level] }, style]}>{children}</Text>
+      <Text.Regular
+        style={[
+          styles.heading,
+          { fontSize: fontSizes[level], lineHeight: fontSizes[level] * 1.2 },
+          style,
+        ]}
+      >
+        {children}
+      </Text.Regular>
     </View>
   );
 }

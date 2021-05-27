@@ -1,11 +1,15 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Text, StyleSheet } from 'react-native';
 
+import { selectConfig } from '../store/reducers/config';
 import * as TYPOGRAPHY from '../constants/typography';
 
 export function Paragraph({ children, style }) {
-  return <Text style={[styles.paragraph, style]}>{children}</Text>;
+  const { text_color_primary: color } = useSelector(selectConfig);
+
+  return <Text style={[styles.paragraph, { color }, style]}>{children}</Text>;
 }
 Paragraph.propTypes = {
   children: PropTypes.string,
