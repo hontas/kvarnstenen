@@ -5,7 +5,7 @@ import * as TYPOGRAPHY from '../constants/typography';
 import * as Text from './Text';
 
 interface Props {
-  children: JSX.Element;
+  children: JSX.Element | string;
   style?: TextStyle;
   containerStyle?: ViewStyle;
   level?: 1 | 2 | 3 | 4 | 5 | 6;

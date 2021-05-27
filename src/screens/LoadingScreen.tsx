@@ -1,19 +1,19 @@
 import * as React from 'react';
-import { StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 
 import { Heading } from '../components/Heading';
+import { Layout } from '../components/Layout';
 
 interface Props {
-  children?: React.ElementType;
   text?: string;
 }
 
-export function LoadingScreen({ children, text }: Props) {
+export function LoadingScreen({ text = '' }: Props) {
   return (
-    <SafeAreaView style={styles.container}>
-      {text ? <Heading>{text}</Heading> : children}
+    <Layout contentContainerStyle={styles.container}>
+      <Heading>{text}</Heading>
       <ActivityIndicator size="large" />
-    </SafeAreaView>
+    </Layout>
   );
 }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { Modal, View, StyleSheet, Pressable, Text } from 'react-native';
+import { Modal, View, StyleSheet, Pressable } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,18 +8,17 @@ import useT from '../../utils/useT';
 import { selectScreen } from '../../store/reducers/screens';
 import { selectConfig } from '../../store/reducers/config';
 import * as Button from '../../components/Button';
-import { ScreenProps } from '../../constants/types';
 import * as LAYOUT from '../../constants/layout';
 import COLORS from '../../constants/colors';
 import { ROUTE_NAMES } from '../../constants/routes';
 import { Background } from '../../components/Background';
 
-interface Props extends Pick<ScreenProps, 'navigation'> {
-  onDismiss: () => void;
+interface Props {
+  onDismiss: (route?: typeof ROUTE_NAMES.HOME) => void;
   visible: boolean;
 }
 
-export const Menu = ({ navigation, onDismiss, visible }: Props) => {
+export const Menu = ({ onDismiss, visible }: Props) => {
   const insets = useSafeAreaInsets();
   const screen = useSelector(selectScreen('chapter'));
   const { text_color_primary } = useSelector(selectConfig);
@@ -31,15 +30,12 @@ export const Menu = ({ navigation, onDismiss, visible }: Props) => {
         <Background flip style={[styles.container, { paddingBottom: insets.bottom + 30 }]}>
           <View>
             <View style={styles.header}>
-              <Pressable onPress={onDismiss} style={styles.closeButton}>
+              <Pressable onPress={() => onDismiss()} style={styles.closeButton}>
                 <Entypo name="cross" size={24} color={text_color_primary} />
               </Pressable>
             </View>
             <Button.Primary
-              onPress={() => {
-                navigation.navigate(ROUTE_NAMES.HOME);
-                onDismiss();
-              }}
+              onPress={() => onDismiss(ROUTE_NAMES.HOME)}
               style={styles.button}
               text={t('menu_go_home')}
               Icon={() => (
@@ -49,7 +45,7 @@ export const Menu = ({ navigation, onDismiss, visible }: Props) => {
           </View>
           <View>
             <Button.Primary
-              onPress={onDismiss}
+              onPress={() => onDismiss()}
               style={styles.button}
               text={t('menu_close')}
               Icon={() => (

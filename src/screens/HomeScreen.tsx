@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Animated, Easing, View, StyleSheet, Dimensions } from 'react-native';
+import { Animated, Easing, Image, View, StyleSheet, Dimensions } from 'react-native';
 import { Video } from 'expo-av';
 
 import useT from '../utils/useT';
@@ -13,8 +13,10 @@ import { LoadingScreen } from './LoadingScreen';
 import { ROUTE_NAMES } from '../constants/routes';
 import { ScreenProps } from '../constants/types';
 import * as LAYOUT from '../constants/layout';
+import { Paragraph } from '../components/Paragraph';
 
 const SCREEN = Dimensions.get('screen');
+const kvarnstenSize = SCREEN.width / 1.5;
 const defaultAspectRatio = 16 / 9;
 type Props = ScreenProps;
 
@@ -27,6 +29,7 @@ export function HomeScreen({ navigation }: Props) {
   const hasSavedGames = slotsArray.length > 0;
   const t = useT(screen?.ui_texts);
   const video = React.useRef<Video>(null);
+  const imageRotation = React.useRef<Animated.Value>(new Animated.Value(0)).current;
   const [videoSize, setVideoSize] = React.useState({
     width: SCREEN.width,
     height: SCREEN.width / defaultAspectRatio,
@@ -42,6 +45,14 @@ export function HomeScreen({ navigation }: Props) {
     duration: 5000,
     easing: Easing.linear,
   });
+  const rotate = Animated.loop(
+    Animated.timing(imageRotation, {
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 100000,
+      easing: Easing.linear,
+    })
+  );
 
   const onReadyForDisplay = React.useCallback(({ naturalSize }) => {
     const { height, width } = naturalSize;
@@ -70,14 +81,21 @@ export function HomeScreen({ navigation }: Props) {
     }
   }, [screen, navigation]);
 
-  if (error) return <Heading>Ngt gick snett {error}</Heading>;
+  if (error)
+    return (
+      <Layout>
+        <Heading>{t('generic_error_message')}</Heading>
+        <Paragraph>{error}</Paragraph>
+      </Layout>
+    );
+
   if (isLoading) return <LoadingScreen />;
 
   return (
     <Layout>
-      <Heading>{screen.title}</Heading>
-      <Animated.View style={[styles.videoContainer, { opacity }]}>
-        {hasVideo && (
+      <Heading containerStyle={styles.heading}>{screen.title}</Heading>
+      {!hasVideo ? (
+        <Animated.View style={[styles.mediaContainer, styles.videoContainer, { opacity }]}>
           <Video
             ref={video}
             style={videoSize}
@@ -87,8 +105,36 @@ export function HomeScreen({ navigation }: Props) {
             onReadyForDisplay={onReadyForDisplay}
             onLoad={onLoad}
           />
-        )}
-      </Animated.View>
+        </Animated.View>
+      ) : (
+        <Animated.View
+          style={[
+            styles.mediaContainer,
+            {
+              transform: [
+                {
+                  rotateZ: imageRotation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0deg', '-360deg'],
+                  }),
+                },
+              ],
+            },
+            { opacity },
+          ]}
+        >
+          <Image
+            style={styles.image}
+            source={require('../../assets/kvarnsten.png')}
+            width={kvarnstenSize}
+            height={kvarnstenSize}
+            onLoad={() => {
+              fadeIn.start();
+              rotate.start();
+            }}
+          />
+        </Animated.View>
+      )}
       <View style={styles.actionButtons}>
         <Button.Primary text={t('new_game')} style={styles.button} onPress={newGame} />
         {hasSavedGames && (
@@ -109,10 +155,19 @@ export function HomeScreen({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
-  videoContainer: {
+  heading: {
+    alignItems: 'center',
+  },
+  mediaContainer: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  videoContainer: {
     marginHorizontal: -LAYOUT.horizontalMargin,
+  },
+  image: {
+    opacity: 0.5,
   },
   actionButtons: {
     flex: 1,

@@ -8,4 +8,4 @@ export const ROUTE_NAMES = {
   NEW_GAME: 'game/new',
   GAME_LOADING: 'game/loading',
   START_GAME: 'game/start',
-};
+} as const;

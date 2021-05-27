@@ -196,7 +196,16 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
           <AudioPlayer uri={chapter.audio.url} onComplete={onComplete} parentSetSound={setSound} />
         )}
       </Layout>
-      <Menu visible={showMenu} navigation={navigation} onDismiss={() => setShowMenu(false)} />
+      <Menu
+        visible={showMenu}
+        onDismiss={async (to?: string) => {
+          setShowMenu(false);
+          if (to && sound) {
+            await sound.unloadAsync();
+            navigation.navigate(to);
+          }
+        }}
+      />
     </KeyboardAvoidingView>
   );
 }
