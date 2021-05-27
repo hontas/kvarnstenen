@@ -94,7 +94,7 @@ export function HomeScreen({ navigation }: Props) {
   return (
     <Layout>
       <Heading containerStyle={styles.heading}>{screen.title}</Heading>
-      {!hasVideo ? (
+      {hasVideo ? (
         <Animated.View style={[styles.mediaContainer, styles.videoContainer, { opacity }]}>
           <Video
             ref={video}
