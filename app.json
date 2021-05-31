@@ -3,9 +3,10 @@
     "name": "kvarnstenen",
     "slug": "kvarnstenen",
     "owner": "kvarnstenen",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "primaryColor": "#070000",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,13 +17,18 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "se.salaanalogaspelforening.kvarnstenen",
+      "buildNumber": "0.0.1"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "se.salaanalogaspelforening.kvarnstenen",
+      "permissions": [],
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
