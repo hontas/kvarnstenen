@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
 
 import COLORS from '../constants/colors';
 
-export const ProgressBar = ({ progress }) => {
+interface Props {
+  progress: number;
+}
+
+export const ProgressBar = ({ progress }: Props) => {
   const [width, setWidth] = React.useState(0);
 
   const handleLayout = (event) => {
@@ -18,10 +21,6 @@ export const ProgressBar = ({ progress }) => {
   );
 };
 
-ProgressBar.propTypes = {
-  progress: PropTypes.number,
-};
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.gray,
@@ -33,9 +32,11 @@ const styles = StyleSheet.create({
   },
   bar: {
     backgroundColor: COLORS.grayDark,
+    borderColor: COLORS.gray,
+    borderWidth: StyleSheet.hairlineWidth,
     position: 'absolute',
     width: '100%',
-    height: 4,
+    height: 3,
     right: '100%',
   },
 });

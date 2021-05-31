@@ -1,19 +1,25 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import { TextInput, StyleSheet } from 'react-native';
+import { TextInput, StyleSheet, ViewStyle } from 'react-native';
 
 import COLORS from '../constants/colors';
 import * as TYPOGRAPHY from '../constants/typography';
 import LAYOUT from '../constants/layout';
 
-function Input({ placeholder, onChangeText, style }) {
-  return <TextInput style={[styles.container, style]} onChangeText={onChangeText} placeholder={placeholder} />;
+interface Props {
+  placeholder: string;
+  onChangeText: () => void;
+  style: ViewStyle;
 }
-Input.propTypes = {
-  placeholder: PropTypes.string,
-  onChangeText: PropTypes.func,
-  style: TextInput.propTypes.style,
-};
+
+function Input({ placeholder, onChangeText, style }: Props) {
+  return (
+    <TextInput
+      style={[styles.container, style]}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+    />
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
