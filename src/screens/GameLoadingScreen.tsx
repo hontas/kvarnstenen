@@ -5,7 +5,7 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import useT from '../utils/useT';
 import { selectScreen } from '../store/reducers/screens';
 import { ScreenProps } from '../constants/types';
-import { ROUTE_NAMES, getChapterRouteName } from '../constants/routes';
+import { ROUTE_NAMES } from '../constants/routes';
 import { getChapters, selectChaptersLoading, selectChapters } from '../store/reducers/chapters';
 import { Layout } from '../components/Layout';
 import * as Text from '../components/Text';
