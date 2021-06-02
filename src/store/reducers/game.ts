@@ -159,8 +159,9 @@ export const setCurrentChapter = (chapterPath: string, chapterName: string) => a
   dispatch,
   getState: GetState
 ) => {
-  if (!chapterPath || !chapterName) {
-    throw new Error('[setCurrentChapter] chapterPath & chapterName must be set');
+  if (!chapterPath) {
+    console.warn('[setCurrentChapter] chapterPath must be set');
+    return;
   }
 
   const state = getState();
@@ -176,7 +177,7 @@ export const setCurrentChapter = (chapterPath: string, chapterName: string) => a
     console.log(`Setting current chapter of slot ${currentSlotId} to`, chapterPath);
     const currentChapter: CurrentChapter = {
       path: chapterPath,
-      name: chapterName,
+      name: chapterName || chapterPath,
       uid: chapterPath.split('/')[1],
     };
     const payload: SetCurrentChapterPayload = { currentChapter, updatedAt: Date.now() };

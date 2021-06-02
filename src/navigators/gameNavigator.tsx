@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack';
 
 import { selectChapters } from '../store/reducers/chapters';
-import { setCurrentChapter } from '../store/reducers/game';
 import { ChapterScreen } from '../screens/ChapterScreen';
 import { ScreenProps } from '../constants/types';
 import { getChapterRouteName } from '../constants/routes';
@@ -38,8 +37,7 @@ const commonOptions: StackNavigationOptions = {
   },
 };
 
-export function GameNavigator({ navigation, route }: ScreenProps) {
-  const dispatch = useDispatch();
+export function GameNavigator({ route }: ScreenProps) {
   const chapters = useSelector(selectChapters);
   const screens = React.useMemo(() => {
     return Object.keys(chapters).sort((a, b) => {
@@ -49,15 +47,6 @@ export function GameNavigator({ navigation, route }: ScreenProps) {
 
   const startAt = route.params?.startAt;
   const initialRouteName = startAt && getChapterRouteName(startAt);
-
-  React.useEffect(() => {
-    if (screens.length > 0) {
-      const chapter = chapters[startAt || screens[0]];
-      const { name, path } = chapter;
-      const routeName = getChapterRouteName(path);
-      dispatch(setCurrentChapter(routeName, name));
-    }
-  }, [chapters, screens, dispatch, startAt, navigation]);
 
   return (
     <Stack.Navigator screenOptions={commonOptions} initialRouteName={initialRouteName}>
