@@ -7,10 +7,10 @@ import * as TYPOGRAPHY from '../constants/typography';
 
 interface Props {
   children: JSX.Element | string;
-  style: TextStyle;
+  style?: TextStyle;
 }
 
-export function Paragraph({ children, style }: Props) {
+export function Paragraph({ children, style = {} }: Props) {
   const { text_color_primary: color } = useSelector(selectConfig);
 
   return <Text style={[styles.paragraph, { color }, style]}>{children}</Text>;
