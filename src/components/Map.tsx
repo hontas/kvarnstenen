@@ -9,10 +9,18 @@ const SCREEN = Dimensions.get('screen');
 const ZOOM = 0.002;
 const IMAGE_WIDTH = Math.round(SCREEN.width * 0.8);
 
-export const Map = ({ latLng, marker = true, markerTitle, markerDescription, markerImage }: Properties) => {
+export const Map = ({
+  latLng,
+  marker = true,
+  markerTitle,
+  markerDescription,
+  markerImage,
+}: Properties) => {
   const animValue = useValue(0);
   const [toValue, setToValue] = React.useState(1);
-  const IMAGE_HEIGHT = markerImage ? Math.round(IMAGE_WIDTH / (markerImage.width / markerImage.height)) : 0;
+  const IMAGE_HEIGHT = markerImage
+    ? Math.round(IMAGE_WIDTH / (markerImage.width / markerImage.height))
+    : 0;
 
   const onMarkerPress = React.useCallback(() => {
     Animated.timing(animValue, {
@@ -52,7 +60,10 @@ export const Map = ({ latLng, marker = true, markerTitle, markerDescription, mar
                   {
                     translateY: animValue.interpolate({
                       inputRange: [0, 1],
-                      outputRange: [-IMAGE_HEIGHT * 0.8, -IMAGE_HEIGHT - (markerDescription ? 40 : 0)],
+                      outputRange: [
+                        -IMAGE_HEIGHT * 0.8,
+                        -IMAGE_HEIGHT - (markerDescription ? 40 : 0),
+                      ],
                     }),
                   },
                 ],
