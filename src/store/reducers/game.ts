@@ -52,7 +52,9 @@ interface Action {
 export const selectCurrentSlotId = (state: RootState): string => state.game.currentSlot;
 export const selectSlots = (state: RootState): Slots => state.game.slots;
 export const selectSlotsList = createSelector<RootState, Slots, SlotsArray>(selectSlots, (slots) =>
-  Object.entries(slots).map(([id, slot]) => ({ id, ...slot }))
+  Object.entries(slots)
+    .map(([id, slot]) => ({ id, ...slot }))
+    .filter(({ path }) => Array.isArray(path) && path.length > 0)
 );
 export const selectCurrentSlot = createSelector<RootState, string, Slots, Slot>(
   [selectCurrentSlotId, selectSlots],
