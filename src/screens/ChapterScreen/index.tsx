@@ -199,11 +199,11 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       <Menu
         visible={showMenu}
         onDismiss={async (to?: string) => {
-          setShowMenu(false);
-          if (to && sound) {
+          if (sound) {
             await sound.unloadAsync();
-            navigation.navigate(to);
           }
+          setShowMenu(false);
+          if (to) navigation.navigate(to);
         }}
       />
     </KeyboardAvoidingView>
