@@ -27,11 +27,15 @@ module.exports = {
   rules: {
     'import/order': [
       'warn',
-      { 'newlines-between': 'always', groups: ['builtin', 'external', ['parent', 'sibling', 'index']] },
+      {
+        'newlines-between': 'always',
+        groups: ['builtin', 'external', ['parent', 'sibling', 'index']],
+      },
     ],
     'react-native/sort-styles': 0,
     'react-native/no-raw-text': ['error', { skip: ['Paragraph', 'Heading'] }],
     '@typescript-eslint/explicit-module-boundary-types': 0,
+    '@typescript-eslint/no-unused-vars': 2,
     '@typescript-eslint/no-empty-function': ['warn'],
     'unicorn/filename-case': [0],
     'unicorn/prefer-module': [0],
