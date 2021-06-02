@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, StyleSheet, View, ScrollView } from 'react-native';
+import { Text, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { Entypo } from '@expo/vector-icons';
 
 import * as Button from '../components/Button';
 import { Layout } from '../components/Layout';
 import {
+  selectSlots,
   selectSlotsList,
   setCurrentSlot,
   removeSlot,
@@ -26,6 +27,22 @@ const transition = (
     <Transition.Change durationMs={transitionDuration} interpolation="easeInOut" />
   </Transition.Together>
 );
+
+export function ClearAllSavedGames() {
+  const dispatch = useDispatch();
+  const allSlots = useSelector(selectSlots);
+  const handleClearAll = React.useCallback(() => {
+    for (const id of Object.keys(allSlots)) {
+      dispatch(removeSlot(id));
+    }
+  }, [allSlots, dispatch]);
+
+  return (
+    <TouchableOpacity onPress={handleClearAll}>
+      <Text style={styles.clearAllButton}>Rensa alla</Text>
+    </TouchableOpacity>
+  );
+}
 
 export function ContinueGameScreen({ navigation }: ScreenProps) {
   const dispatch = useDispatch();
@@ -120,6 +137,11 @@ const MARGIN = 20;
 const HEIGHT = 60;
 
 const styles = StyleSheet.create({
+  clearAllButton: {
+    color: COLORS.white,
+    fontWeight: 'bold',
+    padding: 10,
+  },
   container: {
     marginHorizontal: 0,
   },

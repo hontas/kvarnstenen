@@ -6,7 +6,7 @@ import { Entypo } from '@expo/vector-icons';
 import { HomeScreen } from '../screens/HomeScreen';
 import { NewGameScreen } from '../screens/NewGameScreen';
 import { HowToPlayScreen } from '../screens/HowToPlayScreen';
-import { ContinueGameScreen } from '../screens/ContinueGameScreen';
+import { ContinueGameScreen, ClearAllSavedGames } from '../screens/ContinueGameScreen';
 import { GameLoadingScreen } from '../screens/GameLoadingScreen';
 import { GameNavigator, transitionConfig, fadeInOut } from './gameNavigator';
 import { ROUTE_NAMES } from '../constants/routes';
@@ -31,6 +31,7 @@ const routes = [
     component: ContinueGameScreen,
     options: {
       headerShown: true,
+      headerRight: () => <ClearAllSavedGames />,
     },
   },
   {

@@ -32,6 +32,7 @@ module.exports = {
         groups: ['builtin', 'external', ['parent', 'sibling', 'index']],
       },
     ],
+    'react/display-name': 0,
     'react-native/sort-styles': 0,
     'react-native/no-raw-text': ['error', { skip: ['Paragraph', 'Heading'] }],
     '@typescript-eslint/explicit-module-boundary-types': 0,
