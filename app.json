@@ -18,7 +18,6 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "se.salaanalogaspelforening.kvarnstenen",
       "buildNumber": "0.0.4",
       "config": {
         "usesNonExemptEncryption": false
@@ -29,14 +28,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "se.salaanalogaspelforening.kvarnstenen",
       "permissions": [],
       "versionCode": 4,
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyBVsoM8qV8pSsNkmIEuwdYVmZhP9Hbzz5c"
-        }
-      }
+      "config": {}
     },
     "web": {
       "favicon": "./assets/favicon.png"
