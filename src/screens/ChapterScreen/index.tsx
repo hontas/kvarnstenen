@@ -52,6 +52,9 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
   const chapter = chapters[routeName];
   const { text_color_primary, text_color_dim } = useSelector(selectConfig);
   const t = useT(screen?.ui_texts);
+  // show_name should default to true but will return null if unset.
+  const showTitle = chapter.show_name ?? true;
+  const name = showTitle ? chapter.name : '';
 
   const markerImage = chapter.geo_location_image && {
     uri: chapter.geo_location_image.url,
@@ -103,7 +106,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       <Layout contentContainerStyle={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Heading level={2} containerStyle={styles.heading}>
-            {chapter.name}
+            {name}
           </Heading>
 
           <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">

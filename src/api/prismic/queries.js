@@ -66,6 +66,7 @@ export const getAllChapters = (after) => {
         edges {
           node {
             name
+            show_name
             audio {
               ... on _FileLink {
                 url
