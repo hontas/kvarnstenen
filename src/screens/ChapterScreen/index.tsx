@@ -205,7 +205,7 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
       <Menu
         visible={showMenu}
         onDismiss={async (to?: string) => {
-          if (sound) {
+          if (to && sound) {
             await sound.unloadAsync();
           }
           setShowMenu(false);
