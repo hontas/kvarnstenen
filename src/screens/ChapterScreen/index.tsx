@@ -112,13 +112,16 @@ export function ChapterScreen({ navigation, route }: ScreenProps) {
           <LoadingBoundary isLoading={isLoading} loadingText="Laddar ljudfiler">
             <>
               {chapter.image && (
-                <View style={styles.image}>
+                <View style={styles.imageContainer}>
                   <Image
                     source={{ uri: chapter.image.url }}
-                    style={{
-                      width: SCREEN.width,
-                      height: SCREEN.width / imageAspectRatio,
-                    }}
+                    style={[
+                      styles.image,
+                      {
+                        width: SCREEN.width,
+                        height: SCREEN.width / imageAspectRatio,
+                      },
+                    ]}
                   />
                 </View>
               )}
@@ -236,9 +239,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  imageContainer: {
+    flex: 2,
+    justifyContent: 'center',
+  },
   image: {
     flex: 1,
-    justifyContent: 'center',
   },
   choiceHeadline: {
     color: COLORS.white,
