@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 
 import { HomeScreen } from '../screens/HomeScreen';
-import { NewGameScreen } from '../screens/NewGameScreen';
 import { HowToPlayScreen } from '../screens/HowToPlayScreen';
 import { ContinueGameScreen, ClearAllSavedGames } from '../screens/ContinueGameScreen';
 import { GameLoadingScreen } from '../screens/GameLoadingScreen';
@@ -33,10 +32,6 @@ const routes = [
       headerShown: true,
       headerRight: () => <ClearAllSavedGames />,
     },
-  },
-  {
-    name: ROUTE_NAMES.NEW_GAME,
-    component: NewGameScreen,
   },
   {
     name: ROUTE_NAMES.GAME_LOADING,
