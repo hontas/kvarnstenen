@@ -5,7 +5,11 @@ import { Audio } from 'expo-av';
 import { ProgressBar } from './ProgressBar';
 import { AudioControls } from './AudioControls';
 
-Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).catch(console.log);
+Audio.setAudioModeAsync({
+  playsInSilentModeIOS: true,
+  staysActiveInBackground: true,
+  interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+}).catch(console.log);
 
 export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
   const [soundObject, setSoundObject] = React.useState<Audio.Sound>();
@@ -46,7 +50,11 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
     const loadSound = async () => {
       console.log('loading audio');
 
-      const { sound, status } = await Audio.Sound.createAsync({ uri }, { shouldPlay: false }, onPlaybackStatusUpdate);
+      const { sound, status } = await Audio.Sound.createAsync(
+        { uri },
+        { shouldPlay: false },
+        onPlaybackStatusUpdate
+      );
 
       // console.log('createAsync status', status);
       setSoundObject(sound);
@@ -88,7 +96,9 @@ export const AudioPlayer = ({ uri, parentSetSound, onComplete }: Props) => {
   const forwards = () =>
     soundObject?.getStatusAsync().then((status) => {
       if (status.isLoaded) {
-        soundObject?.setPositionAsync(Math.min(status.positionMillis + 15 * 1000, status.durationMillis || 0));
+        soundObject?.setPositionAsync(
+          Math.min(status.positionMillis + 15 * 1000, status.durationMillis || 0)
+        );
       }
     });
 
