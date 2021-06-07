@@ -2,14 +2,14 @@ import { combineReducers } from 'redux';
 
 import screens from './screens';
 import chapters from './chapters';
-import user from './user';
+import localState from './localState';
 import config from './config';
 import game, { State as GameState } from './game';
 
 export default combineReducers({
   screens,
   chapters,
-  user,
+  localState,
   game,
   config,
 });
