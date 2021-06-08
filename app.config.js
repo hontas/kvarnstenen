@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 export default ({ config }) => {
-  return {
+  const combinedConfig = {
     ...config,
     ios: {
       ...config.ios,
@@ -19,4 +19,8 @@ export default ({ config }) => {
       },
     },
   };
+
+  console.log('config', combinedConfig);
+
+  return combinedConfig;
 };
