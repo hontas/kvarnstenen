@@ -3,7 +3,6 @@
     "name": "kvarnstenen",
     "slug": "kvarnstenen",
     "owner": "kvarnstenen",
-    "version": "0.0.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "primaryColor": "#070000",
@@ -18,7 +17,6 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
-      "buildNumber": "0.0.7",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -31,8 +29,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#070000"
       },
-      "permissions": [],
-      "versionCode": 7
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
