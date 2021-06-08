@@ -16,7 +16,7 @@ import * as LAYOUT from '../constants/layout';
 import { Paragraph } from '../components/Paragraph';
 
 const SCREEN = Dimensions.get('screen');
-const kvarnstenSize = SCREEN.width / 1.5;
+const kvarnstenSize = Math.round(SCREEN.width / 1.5);
 const defaultAspectRatio = 16 / 9;
 type Props = ScreenProps;
 
@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
   },
   image: {
     opacity: 0.5,
+    width: kvarnstenSize,
+    height: kvarnstenSize,
   },
   actionButtons: {
     flex: 1,
