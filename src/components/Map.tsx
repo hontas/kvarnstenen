@@ -7,7 +7,7 @@ import { Image } from './Image';
 
 const SCREEN = Dimensions.get('screen');
 const ZOOM = 0.002;
-const IMAGE_WIDTH = Math.round(SCREEN.width * 0.8);
+const IMAGE_MAX_SIZE = Math.round(SCREEN.width * 0.8);
 
 export const Map = ({
   latLng,
@@ -18,9 +18,22 @@ export const Map = ({
 }: Properties) => {
   const animValue = useValue(0);
   const [toValue, setToValue] = React.useState(1);
-  const IMAGE_HEIGHT = markerImage
-    ? Math.round(IMAGE_WIDTH / (markerImage.width / markerImage.height))
-    : 0;
+
+  const imageSize = React.useMemo(() => {
+    if (!markerImage) return { width: 0, height: 0 };
+
+    const aspectRatio = markerImage ? markerImage.width / markerImage.height : 1;
+
+    if (isPortrait(markerImage)) {
+      const height = Math.min(markerImage.height, IMAGE_MAX_SIZE);
+      const width = Math.round(height * aspectRatio);
+      return { width, height };
+    } else {
+      const width = Math.min(markerImage.width, IMAGE_MAX_SIZE);
+      const height = Math.round(width / aspectRatio);
+      return { width, height };
+    }
+  }, [markerImage]);
 
   const onMarkerPress = React.useCallback(() => {
     Animated.timing(animValue, {
@@ -28,9 +41,10 @@ export const Map = ({
       useNativeDriver: true,
       duration: 350,
       easing: Easing.out(Easing.ease),
-    }).start();
-    setToValue((previous) => previous ^ 1);
-  }, [toValue, animValue]);
+    }).start(() => {
+      setToValue((previous) => previous ^ 1);
+    });
+  }, [toValue]);
 
   return (
     <MapView
@@ -51,34 +65,19 @@ export const Map = ({
           title={markerTitle}
           description={markerTitle && markerDescription}
           onPress={onMarkerPress}
-        >
-          {markerImage && (
-            <Animated.View
-              style={{
-                opacity: animValue,
-                transform: [
-                  {
-                    translateY: animValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [
-                        -IMAGE_HEIGHT * 0.8,
-                        -IMAGE_HEIGHT - (markerDescription ? 40 : 0),
-                      ],
-                    }),
-                  },
-                ],
-              }}
-            >
-              <Image
-                borderRadius={0}
-                style={{ transform: [{ translateX: -IMAGE_WIDTH / 2 + 25 }] }}
-                source={markerImage}
-                width={IMAGE_WIDTH}
-                height={IMAGE_HEIGHT}
-                alt={markerDescription}
-              />
-            </Animated.View>
-          )}
+        />
+      )}
+      {markerImage && (
+        <Marker coordinate={latLng} onPress={onMarkerPress} anchor={{ x: 0.5, y: 0.5 }}>
+          <Animated.View style={{ opacity: animValue }}>
+            <Image
+              borderRadius={0}
+              source={markerImage}
+              width={imageSize.width}
+              height={imageSize.height}
+              alt={markerDescription}
+            />
+          </Animated.View>
         </Marker>
       )}
     </MapView>
@@ -109,3 +108,7 @@ const styles = StyleSheet.create({
     height: SCREEN.width,
   },
 });
+
+function isPortrait({ width, height }) {
+  return height > width;
+}
