@@ -1,3 +1,6 @@
+import 'intl';
+import 'intl/locale-data/jsonp/se';
+
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
