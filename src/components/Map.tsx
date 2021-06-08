@@ -57,6 +57,11 @@ export const Map = ({
       }}
       showsCompass={false}
       toolbarEnabled={false}
+      liteMode={true}
+      userInterfaceStyle="dark"
+      showsPointsOfInterest={false}
+      showsScale={false}
+      showsBuildings={false}
     >
       {marker && (
         <Marker
