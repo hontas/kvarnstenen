@@ -4,9 +4,13 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
+import NetInfo from '@react-native-community/netinfo';
 
 import { dismissUpdateAvailable, selectUpdateAvailable } from '../store/reducers/localState';
 import COLORS from '../constants/colors';
+import { selectConfig } from '../store/reducers/config';
+import { selectScreen } from '../store/reducers/screens';
+import useT from '../utils/useT';
 
 const transitionDuration = 500;
 const transition = (
@@ -19,10 +23,16 @@ const transition = (
 
 export const SystemMessage = () => {
   const updateAvailable = useSelector(selectUpdateAvailable);
+  const config = useSelector(selectConfig);
+  const screen = useSelector(selectScreen('system-messages'));
+  const t = useT(screen?.ui_texts);
+
+  const [isConnected, setIsConnected] = React.useState(true);
   const [showToaster, setShowToaster] = React.useState(true);
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
-  const transitionReference = React.useRef<TransitioningView>(null);
+  const topTransitionReference = React.useRef<TransitioningView>(null);
+  const bottomTransitionReference = React.useRef<TransitioningView>(null);
 
   const onUpdate = React.useCallback(() => {
     setShowToaster(false);
@@ -34,45 +44,78 @@ export const SystemMessage = () => {
     setShowToaster(false);
   }, [dispatch]);
 
+  React.useEffect(
+    () =>
+      NetInfo.addEventListener((state) => {
+        setIsConnected(state.isConnected);
+      }),
+    []
+  );
+
   return (
-    <View style={styles.container}>
-      <Transitioning.View ref={transitionReference} transition={transition}>
-        {showToaster && updateAvailable && (
-          <View style={[styles.updateContainer, { paddingBottom: insets.bottom }]}>
-            <Text style={styles.updateText}>Uppdatering tillgänglig</Text>
-            <View style={styles.actionContainer}>
-              <TouchableOpacity style={styles.button} onPress={onUpdate}>
-                <Text style={[styles.buttonText, styles.updateText]}>
-                  Ladda om för att uppdatera
-                </Text>
-              </TouchableOpacity>
-              <Text style={styles.updateText}>eller</Text>
-              <TouchableOpacity style={styles.button} onPress={onDismiss}>
-                <Text style={[styles.buttonText, styles.updateText]}>Stäng</Text>
-              </TouchableOpacity>
+    <>
+      <View style={[styles.container, styles.topContainer]}>
+        <Transitioning.View ref={topTransitionReference} transition={transition}>
+          {!isConnected && (
+            <View
+              style={[
+                styles.messageContainer,
+                {
+                  backgroundColor: config.background_color_gradient_primary,
+                  paddingTop: insets.top,
+                },
+              ]}
+            >
+              <Text style={styles.text}>{t('not_connected_message')}</Text>
             </View>
-          </View>
-        )}
-      </Transitioning.View>
-    </View>
+          )}
+        </Transitioning.View>
+      </View>
+      <View style={[styles.container, styles.bottomContainer]}>
+        <Transitioning.View ref={bottomTransitionReference} transition={transition}>
+          {showToaster && updateAvailable && (
+            <View
+              style={[
+                styles.messageContainer,
+                { backgroundColor: config.background_color_primary, paddingBottom: insets.bottom },
+              ]}
+            >
+              <Text style={styles.text}>{t('update_available')}</Text>
+              <View style={styles.actionContainer}>
+                <TouchableOpacity style={styles.button} onPress={onUpdate}>
+                  <Text style={[styles.buttonText, styles.text]}>{t('reload_to_update')}</Text>
+                </TouchableOpacity>
+                <Text style={styles.text}>{t('or')}</Text>
+                <TouchableOpacity style={styles.button} onPress={onDismiss}>
+                  <Text style={[styles.buttonText, styles.text]}>{t('dismiss')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </Transitioning.View>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.black,
     position: 'absolute',
-    bottom: 0,
     left: 0,
     width: '100%',
     zIndex: 99,
   },
-  updateContainer: {
+  topContainer: {
+    top: 0,
+  },
+  bottomContainer: {
+    bottom: 0,
+  },
+  messageContainer: {
     alignItems: 'center',
     padding: 20,
-    width: '100%',
   },
-  updateText: {
+  text: {
     color: COLORS.white,
   },
   actionContainer: {
