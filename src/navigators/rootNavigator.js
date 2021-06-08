@@ -7,6 +7,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { HowToPlayScreen } from '../screens/HowToPlayScreen';
 import { ContinueGameScreen, ClearAllSavedGames } from '../screens/ContinueGameScreen';
 import { GameLoadingScreen } from '../screens/GameLoadingScreen';
+import { VersionInfoScreen } from '../screens/VersionInfoScreen';
 import { GameNavigator, transitionConfig, fadeInOut } from './gameNavigator';
 import { ROUTE_NAMES } from '../constants/routes';
 import { selectConfig } from '../store/reducers/config';
@@ -21,6 +22,13 @@ const routes = [
   {
     name: ROUTE_NAMES.HOW_TO_PLAY,
     component: HowToPlayScreen,
+    options: {
+      headerShown: true,
+    },
+  },
+  {
+    name: ROUTE_NAMES.VERSION_INFO,
+    component: VersionInfoScreen,
     options: {
       headerShown: true,
     },

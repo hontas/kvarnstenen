@@ -11,6 +11,7 @@ interface Props {
   children?: JSX.Element | JSX.Element[];
   disabled?: boolean;
   onPress: () => void;
+  onLongPress?: () => void;
   containerStyle?: ViewStyle | ViewStyle[];
   style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle | TextStyle[];

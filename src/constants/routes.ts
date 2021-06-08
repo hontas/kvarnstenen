@@ -3,6 +3,7 @@ export const getChapterRouteName = (path) => `${chapterRoutePrefix}/${path}`;
 
 export const ROUTE_NAMES = {
   HOME: 'home',
+  VERSION_INFO: 'help/version-info',
   HOW_TO_PLAY: 'help/howto',
   CONTINUE_GAME: 'game/continue',
   GAME_LOADING: 'game/loading',

@@ -148,6 +148,7 @@ export function HomeScreen({ navigation }: Props) {
           text={t('how_to_play')}
           style={styles.button}
           onPress={() => navigation.navigate(ROUTE_NAMES.HOW_TO_PLAY)}
+          onLongPress={() => navigation.navigate(ROUTE_NAMES.VERSION_INFO)}
         />
       </View>
     </Layout>
