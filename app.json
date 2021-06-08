@@ -32,8 +32,7 @@
         "backgroundColor": "#070000"
       },
       "permissions": [],
-      "versionCode": 7,
-      "config": {}
+      "versionCode": 7
     },
     "web": {
       "favicon": "./assets/favicon.png"
