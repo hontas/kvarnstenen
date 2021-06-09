@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const version = 8;
+const version = 9;
 
 export default ({ config }) => {
   const combinedConfig = {
