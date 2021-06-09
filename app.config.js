@@ -25,7 +25,7 @@ export default ({ config }) => {
     },
   };
 
-  console.log('config', process.env.NODE_ENV);
+  console.log('config', combinedConfig);
 
   return combinedConfig;
 };
