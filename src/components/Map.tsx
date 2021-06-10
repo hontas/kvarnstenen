@@ -65,7 +65,6 @@ export const Map = ({
       {marker && (
         <Marker
           coordinate={latLng}
-          image={require('../../assets/red-x2.png')}
           title={markerTitle}
           description={markerTitle && markerDescription}
           onPress={onMarkerPress}
