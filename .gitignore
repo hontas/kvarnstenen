@@ -1,6 +1,7 @@
 node_modules/**/*
 .expo/*
 android/.expo/*
+.eslintcache
 npm-debug.*
 *.jks
 *.p8
