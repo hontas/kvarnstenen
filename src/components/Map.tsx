@@ -42,6 +42,7 @@ export const Map = ({
       duration: 350,
       easing: Easing.out(Easing.ease),
     }).start(() => {
+      // set next toValue to opposite, 1 or 0
       setToValue((previous) => previous ^ 1);
     });
   }, [toValue]);
@@ -62,15 +63,8 @@ export const Map = ({
       showsScale={false}
       showsBuildings={false}
     >
-      {marker && (
-        <Marker
-          coordinate={latLng}
-          title={markerTitle}
-          description={markerTitle && markerDescription}
-          onPress={onMarkerPress}
-        />
-      )}
-      {markerImage && (
+      {marker && <Marker coordinate={latLng} onPress={onMarkerPress} />}
+      {marker && markerImage && (
         <Marker coordinate={latLng} onPress={onMarkerPress} anchor={{ x: 0.5, y: 0.5 }}>
           <Animated.View style={{ opacity: animValue }}>
             <Image
@@ -78,7 +72,7 @@ export const Map = ({
               source={markerImage}
               width={imageSize.width}
               height={imageSize.height}
-              alt={markerDescription}
+              alt={markerTitle || markerDescription}
             />
           </Animated.View>
         </Marker>
