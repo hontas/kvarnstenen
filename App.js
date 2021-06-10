@@ -8,6 +8,8 @@ import { StatusBar } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
 import * as Updates from 'expo-updates';
+import * as Sentry from 'sentry-expo';
+import Constants from 'expo-constants';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import configureStore from './src/store/configureStore';
@@ -18,6 +20,12 @@ import { getSavedGameState } from './src/store/reducers/game';
 import * as localState from './src/store/reducers/localState';
 import { RootNavigator } from './src/navigators/rootNavigator';
 import { SystemMessage } from './src/components/SystemMessage';
+
+Sentry.init({
+  dsn: Constants.manifest.extra.sentryDsn,
+  enableInExpoDevelopment: true,
+  debug: !Constants.manifest.extra.isProduction,
+});
 
 const store = configureStore();
 const configPromise = store.dispatch(getConfig());

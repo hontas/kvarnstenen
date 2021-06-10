@@ -1,5 +1,19 @@
-const dotenv = require('dotenv');
-dotenv.config();
+import 'dotenv/config';
+
+const missingEnvironmentVariables = [
+  'APP_BUNDLE_ID',
+  'MAPS_ANDROID_API_KEY',
+  'SENTRY_ORG',
+  'SENTRY_PROJECT',
+  'SENTRY_DSN',
+  'SENTRY_AUTH_TOKEN',
+].filter((key) => typeof process.env[key] !== 'string');
+
+if (missingEnvironmentVariables.length > 0) {
+  throw new Error(
+    `Missing required environmental variables: ${missingEnvironmentVariables.join(', ')}`
+  );
+}
 
 const version = 9;
 
@@ -23,9 +37,26 @@ export default ({ config }) => {
         },
       },
     },
+    hooks: {
+      ...config.hooks,
+      postPublish: [
+        ...config.hooks.postPublish,
+        {
+          file: 'sentry-expo/upload-sourcemaps',
+          config: {
+            organization: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+          },
+        },
+      ],
+    },
+    extra: {
+      ...config.extra,
+      sentryDsn: process.env.SENTRY_DSN,
+      isProduction: process.env.NODE_ENV === 'production',
+    },
   };
-
-  console.log('config', combinedConfig);
 
   return combinedConfig;
 };
