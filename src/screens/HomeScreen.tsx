@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect } from 'react';
+import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Animated, Easing, Image, View, StyleSheet, Dimensions } from 'react-native';
-import { Video } from 'expo-av';
+import { Animated, Easing, Image, View, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { Audio, Video } from 'expo-av';
+import { Entypo } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import useT from '../utils/useT';
 import { selectScreen, selectScreensLoading, selectScreensError } from '../store/reducers/screens';
@@ -26,17 +28,24 @@ export function HomeScreen({ navigation }: Props) {
   const error = useSelector(selectScreensError);
   const screen = useSelector(selectScreen('home'));
   const slotsArray = useSelector(selectSlotsList);
+  const insets = useSafeAreaInsets();
   const hasSavedGames = slotsArray.length > 0;
   const t = useT(screen?.ui_texts);
   const video = React.useRef<Video>(null);
+  const sound = React.useRef<Audio.Sound>(null);
   const imageRotation = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+  const [isPlaying, setIsPlaying] = React.useState(true);
   const [videoSize, setVideoSize] = React.useState({
     width: SCREEN.width,
     height: SCREEN.width / defaultAspectRatio,
   });
-  const hasVideo = Boolean(
-    ['mov', 'mp4', 'm4v', '3gp'].includes(screen?.media?.url.split('.').pop())
-  );
+
+  const [hasVideo, hasAudio] = React.useMemo(() => {
+    if (!screen?.media?.url) return [false, false];
+
+    const fileType = screen.media.url.split('.').pop();
+    return [['mov', 'mp4', 'm4v', '3gp'].includes(fileType), ['mp3'].includes(fileType)];
+  }, [screen]);
 
   const opacity = React.useRef(new Animated.Value(0)).current;
   const fadeIn = Animated.timing(opacity, {
@@ -70,16 +79,65 @@ export function HomeScreen({ navigation }: Props) {
     }
   }, [video, fadeIn]);
 
-  const newGame = useCallback(async () => {
+  const unloadSound = React.useCallback(() => {
+    if (sound.current) {
+      sound.current.unloadAsync().catch((error) => {
+        console.log('error', error);
+      });
+    }
+  }, []);
+
+  const newGame = React.useCallback(async () => {
     await dispatch(createNewGame());
+
+    unloadSound();
+
     navigation.navigate(ROUTE_NAMES.GAME_LOADING);
   }, [navigation, dispatch]);
 
-  useEffect(() => {
+  const continueGame = React.useCallback(async () => {
+    unloadSound();
+
+    navigation.navigate(ROUTE_NAMES.CONTINUE_GAME);
+  }, [navigation, unloadSound]);
+
+  React.useEffect(() => {
     if (screen) {
       navigation.setOptions({ title: screen.name });
     }
   }, [screen, navigation]);
+
+  const loadSound = React.useCallback(() => {
+    Audio.Sound.createAsync({ uri: screen.media.url }, { shouldPlay: true, isLooping: true })
+      .then((audio) => {
+        sound.current = audio.sound;
+      })
+      .catch((error) => {
+        console.log('loadSound', error);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    if (!hasAudio) return;
+
+    loadSound();
+
+    return () => unloadSound();
+  }, [hasAudio, loadSound, unloadSound]);
+
+  React.useEffect(() => {
+    if (!sound.current) return;
+
+    if (isPlaying) {
+      sound.current.playAsync();
+    } else {
+      sound.current.pauseAsync();
+    }
+  }, [sound, isPlaying]);
+
+  const toggleMuted = React.useCallback(() => {
+    setIsPlaying((previous) => !previous);
+  }, []);
 
   if (error)
     return (
@@ -93,6 +151,11 @@ export function HomeScreen({ navigation }: Props) {
 
   return (
     <Layout>
+      <View style={[styles.volumeContainer, { top: insets.top, right: insets.right }]}>
+        <Pressable onPress={toggleMuted} style={styles.volumeButton}>
+          <Entypo name={isPlaying ? 'sound' : 'sound-mute'} size={24} color="white" />
+        </Pressable>
+      </View>
       <Heading containerStyle={styles.heading}>{screen.title}</Heading>
       {hasVideo ? (
         <Animated.View style={[styles.mediaContainer, styles.videoContainer, { opacity }]}>
@@ -141,7 +204,7 @@ export function HomeScreen({ navigation }: Props) {
           <Button.Secondary
             text={t('continue_game')}
             style={styles.button}
-            onPress={() => navigation.navigate(ROUTE_NAMES.CONTINUE_GAME)}
+            onPress={continueGame}
           />
         )}
         <Button.Tertiary
@@ -156,6 +219,12 @@ export function HomeScreen({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
+  volumeContainer: {
+    position: 'absolute',
+  },
+  volumeButton: {
+    padding: 10,
+  },
   heading: {
     alignItems: 'center',
   },
