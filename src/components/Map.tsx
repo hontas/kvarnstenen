@@ -58,7 +58,6 @@ export const Map = ({
       }}
       showsCompass={false}
       toolbarEnabled={false}
-      liteMode={true}
       showsPointsOfInterest={false}
       showsScale={false}
       showsBuildings={false}
