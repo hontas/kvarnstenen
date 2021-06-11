@@ -15,7 +15,7 @@ if (missingEnvironmentVariables.length > 0) {
   );
 }
 
-const version = 10;
+const version = 11;
 
 export default ({ config }) => {
   const combinedConfig = {
